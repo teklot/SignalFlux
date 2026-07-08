@@ -1,6 +1,6 @@
 using System;
 
-namespace SignalFlux.Testing
+namespace SignalFlux.Generators
 {
     /// <summary>Generates a sinusoidal signal: Offset + Amplitude * sin(2π·SignalFrequency·t + Phase).</summary>
     public class SineGenerator : SignalGenerator

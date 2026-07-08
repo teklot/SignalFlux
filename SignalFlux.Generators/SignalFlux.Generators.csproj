@@ -6,20 +6,17 @@
     <SatelliteResourceLanguages>en-US</SatelliteResourceLanguages>
     <Nullable>disable</Nullable>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
-    <Title>SignalFlux.Testing</Title>
+    <Title>SignalFlux.Generators</Title>
     <Version>0.1.0</Version>
     <Authors>TekLot,$(AssemblyName)</Authors>
-    <Description>SignalFlux.Testing provides signal generators and test utilities for the SignalFlux ecosystem including sine, square, noise, ramp, sawtooth, and random walk generators.</Description>
+    <Description>SignalFlux.Generators provides signal generators for simulation, test, and measurement including sine, square, noise, ramp, sawtooth, and random walk generators.</Description>
     <Copyright>Copyright © 2026 TekLot</Copyright>
-    <PackageId>SignalFlux.Testing</PackageId>
+    <PackageId>SignalFlux.Generators</PackageId>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
-    <PackageTags>
-      SignalFlux;SignalGenerator;Testing;Simulation;SineWave;Noise;
-      Engineering;Telemetry;dotnet-library
-    </PackageTags>
-    <PackageProjectUrl>https://github.com/teklot/pulsesharp</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/teklot/pulsesharp.git</RepositoryUrl>
+    <PackageTags>SignalFlux;SignalGenerator;Simulation;SineWave;Noise;Engineering;Telemetry;dotnet-library</PackageTags>
+    <PackageProjectUrl>https://github.com/teklot/signalflux</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/teklot/signalflux.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
   </PropertyGroup>
 

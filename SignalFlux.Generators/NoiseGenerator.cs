@@ -1,6 +1,6 @@
 using System;
 
-namespace SignalFlux.Testing
+namespace SignalFlux.Generators
 {
     /// <summary>Generates uniform white noise in the range [Offset - Amplitude, Offset + Amplitude].</summary>
     public class NoiseGenerator : SignalGenerator

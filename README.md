@@ -158,7 +158,7 @@ Two different DAQ systems produce `Signal<double>` with different units, rates, 
 ### Automated Test & Measurement
 
 ```
-Test Script → SignalFlux.Testing.SineGenerator → Capture → Compare → PASS/FAIL
+Test Script → SignalFlux.Generators.SineGenerator → Capture → Compare → PASS/FAIL
 ```
 
 Generate stimulus signals, capture response via SignalFlux.IO, compare against expected ranges, archive the entire experiment (signals + events + config + equipment list) as a single `Experiment` object.
@@ -183,7 +183,7 @@ Every `Measurement` has a `Timestamp` and `Source`. Every `Experiment` captures 
 |---|---|---|
 | **SignalFlux.Core** | Core domain model: `Signal<T>`, `Measurement<T>`, `Event`, `Experiment`, `Session`, `Result<T>`, `Metadata`, `Timestamp`, `Window`, `Range<T>`, `Quality` | Phase 1 |
 | **SignalFlux.TimeSeries** | Time-series operations: resampling, interpolation, alignment, windowing, statistics, downsampling | Phase 1 |
-| **SignalFlux.Testing** | Signal generators: sine, square, noise, ramp, sawtooth, random walk | Phase 1 |
+| **SignalFlux.Generators** | Signal generators: sine, square, noise, ramp, sawtooth, random walk | Phase 1 |
 | **SignalFlux.IO** | Unified stream connection abstraction: TCP, UDP, Serial, Named Pipes with async, cancellation, timeouts | Phase 2 |
 | **SignalFlux.Storage** | Storage adapters: CSV streaming read/write, `ISignalStore`/`IExperimentStore` interfaces | Phase 2 |
 
@@ -192,7 +192,7 @@ Every `Measurement` has a `Timestamp` and `Source`. Every `Experiment` captures 
 ```shell
 dotnet add package SignalFlux.Core
 dotnet add package SignalFlux.TimeSeries
-dotnet add package SignalFlux.Testing
+dotnet add package SignalFlux.Generators
 ```
 
 > UnitsNet is automatically included as a dependency of SignalFlux.Core. Add `using UnitsNet.Units;` to access typed unit enums like `ElectricPotentialUnit.Volt`, `TemperatureUnit.DegreeCelsius`, etc.
@@ -372,7 +372,7 @@ An enum describing data confidence: `Unknown`, `Good`, `Fair`, `Poor`, `Bad`, `I
 
 ## Roadmap
 
-- **Phase 1** (Foundation): Core domain, TimeSeries, Testing ✓
+- **Phase 1** (Foundation): Core domain, TimeSeries, Generators ✓
 - **Phase 2** (Data Acquisition): IO, Storage ✓
 - **Phase 3** (Ecosystem): Protocols, Visualization
 - **Phase 4** (Industry Integrations): OPC UA, CAN, devices, ML

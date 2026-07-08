@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using SignalFlux;
 using UnitsNet.Units;
 
-namespace SignalFlux.Testing
+namespace SignalFlux.Generators
 {
     /// <summary>Abstract base class for generating deterministic or pseudo-random test signals.</summary>
     public abstract class SignalGenerator
@@ -70,7 +70,7 @@ namespace SignalFlux.Testing
                 StartTime,
                 unit: ElectricPotentialUnit.Volt,
                 tags: new Dictionary<string, string> { { "Generator", Name } },
-                source: $"SignalFlux.Testing.{GetType().Name}");
+                source: $"SignalFlux.Generators.{GetType().Name}");
         }
 
 #if NET10_0

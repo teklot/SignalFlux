@@ -27,7 +27,7 @@
   <ItemGroup>
     <ProjectReference Include="..\SignalFlux.Core\SignalFlux.Core.csproj" />
     <ProjectReference Include="..\SignalFlux.TimeSeries\SignalFlux.TimeSeries.csproj" />
-    <ProjectReference Include="..\SignalFlux.Testing\SignalFlux.Testing.csproj" />
+    <ProjectReference Include="..\SignalFlux.Generators\SignalFlux.Generators.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,6 +1,6 @@
 using System;
 
-namespace SignalFlux.Testing
+namespace SignalFlux.Generators
 {
     /// <summary>Generates a linear ramp signal: Offset + Slope × time.</summary>
     public class RampGenerator : SignalGenerator

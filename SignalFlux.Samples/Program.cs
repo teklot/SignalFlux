@@ -1,6 +1,6 @@
 using System;
 using SignalFlux;
-using SignalFlux.Testing;
+using SignalFlux.Generators;
 using SignalFlux.TimeSeries;
 using SignalFlux.Storage;
 using static System.Console;

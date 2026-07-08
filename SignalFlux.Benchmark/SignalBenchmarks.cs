@@ -2,7 +2,7 @@ using System;
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Jobs;
 using SignalFlux;
-using SignalFlux.Testing;
+using SignalFlux.Generators;
 using SignalFlux.TimeSeries;
 
 namespace SignalFlux.Benchmark

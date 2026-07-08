@@ -10,7 +10,7 @@ $packages = @(
     "SignalFlux.IO\bin\Release\SignalFlux.IO.0.1.0.nupkg"
     "SignalFlux.Storage\bin\Release\SignalFlux.Storage.0.1.0.nupkg"
     "SignalFlux.TimeSeries\bin\Release\SignalFlux.TimeSeries.0.1.0.nupkg"
-    "SignalFlux.Testing\bin\Release\SignalFlux.Testing.0.1.0.nupkg"
+    "SignalFlux.Generators\bin\Release\SignalFlux.Generators.0.1.0.nupkg"
 )
 
 foreach ($pkg in $packages) {

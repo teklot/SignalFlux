@@ -1,6 +1,6 @@
 using System;
 
-namespace SignalFlux.Testing
+namespace SignalFlux.Generators
 {
     /// <summary>Generates a sawtooth wave signal that rises linearly from -Amplitude to +Amplitude each period.</summary>
     public class SawtoothGenerator : SignalGenerator

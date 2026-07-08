@@ -1,7 +1,7 @@
 using System;
 using UnitsNet.Units;
 
-namespace SignalFlux.Testing
+namespace SignalFlux.Generators
 {
     /// <summary>Generates a random walk (Brownian motion) signal. Does not support time-based generation.</summary>
     public class RandomWalkGenerator : SignalGenerator
@@ -62,7 +62,7 @@ namespace SignalFlux.Testing
                 StartTime,
                 unit: ElectricPotentialUnit.Volt,
                 tags: new System.Collections.Generic.Dictionary<string, string> { { "Generator", Name } },
-                source: $"SignalFlux.Testing.{GetType().Name}");
+                source: $"SignalFlux.Generators.{GetType().Name}");
         }
     }
 }

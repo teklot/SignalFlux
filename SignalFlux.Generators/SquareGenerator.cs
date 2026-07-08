@@ -1,6 +1,6 @@
 using System;
 
-namespace SignalFlux.Testing
+namespace SignalFlux.Generators
 {
     /// <summary>Generates a square wave signal with configurable duty cycle.</summary>
     public class SquareGenerator : SignalGenerator

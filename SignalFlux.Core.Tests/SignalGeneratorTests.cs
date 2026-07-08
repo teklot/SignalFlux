@@ -1,5 +1,5 @@
 using Xunit;
-using SignalFlux.Testing;
+using SignalFlux.Generators;
 
 namespace SignalFlux.Tests
 {
