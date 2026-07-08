@@ -7,7 +7,6 @@
     <Nullable>disable</Nullable>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <Title>SignalFlux.IO</Title>
-    <Version>0.1.0</Version>
     <Authors>TekLot,$(AssemblyName)</Authors>
     <Description>SignalFlux.IO provides a unified stream connection abstraction (IStreamConnection) for TCP, UDP, Serial, and Named Pipes with async, cancellation, and configurable timeouts.</Description>
     <Copyright>Copyright © 2026 TekLot</Copyright>

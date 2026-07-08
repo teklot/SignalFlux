@@ -1,0 +1,30 @@
+name: Publish
+
+on:
+  push:
+    tags: [v*]
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: latest
+
+      - name: Pack
+        run: dotnet pack SignalFlux.slnx --configuration Release
+
+      - name: Obtain NuGet API key (OIDC)
+        id: oidc
+        uses: NuGet/nuget-oidc-auth@v1
+
+      - name: Push packages to NuGet.org
+        run: dotnet nuget push '**/*.nupkg' --source https://api.nuget.org/v3/index.json --skip-duplicate --api-key ${{ steps.oidc.outputs.token }}

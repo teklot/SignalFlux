@@ -7,7 +7,6 @@
     <Nullable>disable</Nullable>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <Title>SignalFlux.Core</Title>
-    <Version>0.1.0</Version>
     <Authors>TekLot,$(AssemblyName)</Authors>
     <Description>SignalFlux.Core is the foundational package for the SignalFlux engineering computing ecosystem. Provides core domain types: Signal&lt;T&gt;, Measurement&lt;T&gt;, Event, Experiment, Session, Result&lt;T&gt;, Metadata, and more.</Description>
     <Copyright>Copyright © 2026 TekLot</Copyright>

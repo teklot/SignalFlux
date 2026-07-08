@@ -7,7 +7,6 @@
     <Nullable>disable</Nullable>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <Title>SignalFlux.Generators</Title>
-    <Version>0.1.0</Version>
     <Authors>TekLot,$(AssemblyName)</Authors>
     <Description>SignalFlux.Generators provides signal generators for simulation, test, and measurement including sine, square, noise, ramp, sawtooth, and random walk generators.</Description>
     <Copyright>Copyright © 2026 TekLot</Copyright>

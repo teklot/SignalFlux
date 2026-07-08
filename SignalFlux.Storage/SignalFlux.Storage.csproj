@@ -7,7 +7,6 @@
     <Nullable>disable</Nullable>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <Title>SignalFlux.Storage</Title>
-    <Version>0.1.0</Version>
     <Authors>TekLot,$(AssemblyName)</Authors>
     <Description>SignalFlux.Storage provides storage adapters for Signal&lt;T&gt; and Experiment with CSV streaming, round-trip serialization, and extensible adapter interfaces.</Description>
     <Copyright>Copyright © 2026 TekLot</Copyright>

@@ -7,7 +7,6 @@
     <Nullable>disable</Nullable>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <Title>SignalFlux.TimeSeries</Title>
-    <Version>0.1.0</Version>
     <Authors>TekLot,$(AssemblyName)</Authors>
     <Description>SignalFlux.TimeSeries provides time-series operations for Signal&lt;T&gt; including resampling, interpolation, alignment, windowing, statistics, and downsampling.</Description>
     <Copyright>Copyright © 2026 TekLot</Copyright>
