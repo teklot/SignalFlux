@@ -19,8 +19,14 @@ jobs:
         with:
           dotnet-version: latest
 
+      - name: Restore
+        run: dotnet restore SignalFlux.slnx
+
+      - name: Build
+        run: dotnet build SignalFlux.slnx --configuration Release --no-restore
+
       - name: Pack
-        run: dotnet pack SignalFlux.slnx --configuration Release
+        run: dotnet pack SignalFlux.slnx --configuration Release --no-build
 
       - name: NuGet login (OIDC → temp API key)
         id: login
