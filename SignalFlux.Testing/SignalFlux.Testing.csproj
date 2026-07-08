@@ -1,0 +1,34 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0;net10.0</TargetFrameworks>
+    <LangVersion>latest</LangVersion>
+    <SatelliteResourceLanguages>en-US</SatelliteResourceLanguages>
+    <Nullable>disable</Nullable>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
+    <Title>SignalFlux.Testing</Title>
+    <Version>0.1.0</Version>
+    <Authors>TekLot,$(AssemblyName)</Authors>
+    <Description>SignalFlux.Testing provides signal generators and test utilities for the SignalFlux ecosystem including sine, square, noise, ramp, sawtooth, and random walk generators.</Description>
+    <Copyright>Copyright © 2026 TekLot</Copyright>
+    <PackageId>SignalFlux.Testing</PackageId>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageTags>
+      SignalFlux;SignalGenerator;Testing;Simulation;SineWave;Noise;
+      Engineering;Telemetry;dotnet-library
+    </PackageTags>
+    <PackageProjectUrl>https://github.com/teklot/pulsesharp</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/teklot/pulsesharp.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SignalFlux.Core\SignalFlux.Core.csproj" />
+  </ItemGroup>
+
+</Project>

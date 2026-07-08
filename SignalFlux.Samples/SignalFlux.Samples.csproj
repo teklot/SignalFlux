@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SignalFlux.Core\SignalFlux.Core.csproj" />
+    <ProjectReference Include="..\SignalFlux.TimeSeries\SignalFlux.TimeSeries.csproj" />
+    <ProjectReference Include="..\SignalFlux.Testing\SignalFlux.Testing.csproj" />
+    <ProjectReference Include="..\SignalFlux.Storage\SignalFlux.Storage.csproj" />
+    <ProjectReference Include="..\SignalFlux.IO\SignalFlux.IO.csproj" />
+  </ItemGroup>
+
+</Project>
