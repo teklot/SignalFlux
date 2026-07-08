@@ -15,6 +15,7 @@
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageTags>SignalFlux;SignalGenerator;Simulation;SineWave;Noise;Engineering;Telemetry;dotnet-library</PackageTags>
+    <PackageReleaseNotes>Provides signal generators for simulation and test including sine, square, noise, ramp, sawtooth, and random walk, each with both in-memory and streaming output paths.</PackageReleaseNotes>
     <PackageProjectUrl>https://github.com/teklot/signalflux</PackageProjectUrl>
     <RepositoryUrl>https://github.com/teklot/signalflux.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
@@ -26,6 +27,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SignalFlux.Core\SignalFlux.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="RELEASE_NOTES.md" Pack="true" PackagePath="" />
   </ItemGroup>
 
 </Project>

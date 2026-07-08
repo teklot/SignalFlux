@@ -15,6 +15,7 @@
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageTags>SignalFlux;Signal;Measurement;Engineering;Telemetry;TimeSeries;DataAcquisition;Scientific;DomainModel;dotnet-library</PackageTags>
+    <PackageReleaseNotes>Provides the foundational domain model including Signal&lt;T&gt;, Measurement&lt;T&gt;, Event, Experiment, Session, Result&lt;T&gt;, Metadata, Timestamp, Window, Range&lt;T&gt;, and Quality, with typed units via UnitsNet and support for netstandard2.0 and net10.0.</PackageReleaseNotes>
     <PackageProjectUrl>https://github.com/teklot/signalflux</PackageProjectUrl>
     <RepositoryUrl>https://github.com/teklot/signalflux.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
@@ -26,6 +27,10 @@
 
   <ItemGroup>
     <PackageReference Include="UnitsNet" Version="5.75.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="RELEASE_NOTES.md" Pack="true" PackagePath="" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">

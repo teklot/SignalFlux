@@ -18,8 +18,9 @@
       SignalFlux;TimeSeries;Signal;Resample;Interpolation;Filtering;
       Statistics;Windowing;Engineering;dotnet-library
     </PackageTags>
-    <PackageProjectUrl>https://github.com/teklot/pulsesharp</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/teklot/pulsesharp.git</RepositoryUrl>
+    <PackageReleaseNotes>Provides time-series operations for Signal&lt;T&gt; including resampling, interpolation, alignment, windowing, statistics, and downsampling via extension methods.</PackageReleaseNotes>
+    <PackageProjectUrl>https://github.com/teklot/signalflux</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/teklot/signalflux.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
   </PropertyGroup>
 
@@ -34,6 +35,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SignalFlux.Core\SignalFlux.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="RELEASE_NOTES.md" Pack="true" PackagePath="" />
   </ItemGroup>
 
 </Project>

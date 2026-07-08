@@ -185,7 +185,7 @@ Every `Measurement` has a `Timestamp` and `Source`. Every `Experiment` captures 
 | **SignalFlux.TimeSeries** | Time-series operations: resampling, interpolation, alignment, windowing, statistics, downsampling | Phase 1 |
 | **SignalFlux.Generators** | Signal generators: sine, square, noise, ramp, sawtooth, random walk | Phase 1 |
 | **SignalFlux.IO** | Unified stream connection abstraction: TCP, UDP, Serial, Named Pipes with async, cancellation, timeouts | Phase 2 |
-| **SignalFlux.Storage** | Storage adapters: CSV streaming read/write, `ISignalStore`/`IExperimentStore` interfaces | Phase 2 |
+| **SignalFlux.Storage** | CSV storage adapters: streaming read/write, `ISignalStore`/`IExperimentStore` interfaces | Phase 2 |
 
 ## Installation
 
@@ -372,7 +372,16 @@ An enum describing data confidence: `Unknown`, `Good`, `Fair`, `Poor`, `Bad`, `I
 
 ## Roadmap
 
-- **Phase 1** (Foundation): Core domain, TimeSeries, Generators ✓
-- **Phase 2** (Data Acquisition): IO, Storage ✓
-- **Phase 3** (Ecosystem): Protocols, Visualization
-- **Phase 4** (Industry Integrations): OPC UA, CAN, devices, ML
+### Phase 1 — Foundation ✓
+- SignalFlux.Core, TimeSeries, Generators — all delivered
+
+### Phase 2 — Data Acquisition (partial ✓)
+- **Delivered:** IO (TCP, UDP, Serial, Named Pipes); Storage (CSV read/write, interfaces)
+- **Pending future release:** SQLite and Parquet storage backends; live acquisition sample; replay support for recorded sessions
+
+### Phase 3 — Ecosystem (planned)
+- Protocol adapters: MAVLink, Modbus, NMEA 0183
+- Visualization adapters: ScottPlot, OxyPlot
+
+### Phase 4 — Industry Integrations (planned)
+- OPC UA, CAN bus, device adapters, ML.NET / ONNX integration

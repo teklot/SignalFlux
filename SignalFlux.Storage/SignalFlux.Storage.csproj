@@ -15,6 +15,7 @@
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageTags>SignalFlux;Storage;CSV;Serialization;DataPersistence;dotnet-library</PackageTags>
+    <PackageReleaseNotes>Provides CSV streaming read and write for Signal&lt;T&gt; along with ISignalStore and IExperimentStore interfaces for extensible data persistence.</PackageReleaseNotes>
     <PackageProjectUrl>https://github.com/teklot/signalflux</PackageProjectUrl>
     <RepositoryUrl>https://github.com/teklot/signalflux.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
@@ -30,6 +31,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SignalFlux.Core\SignalFlux.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="RELEASE_NOTES.md" Pack="true" PackagePath="" />
   </ItemGroup>
 
 </Project>
