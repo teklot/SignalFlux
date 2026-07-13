@@ -126,19 +126,11 @@ namespace SignalFlux.IO
             return _port.BaseStream;
         }
 
-#if NET10_0
         /// <summary>Disposes the serial connection asynchronously.</summary>
         public async ValueTask DisposeAsync()
         {
             await DisconnectAsync().ConfigureAwait(false);
         }
-#else
-        /// <summary>Disposes the serial connection.</summary>
-        public void Dispose()
-        {
-            DisconnectAsync().GetAwaiter().GetResult();
-        }
-#endif
 
         private void ThrowIfNotConnected()
         {

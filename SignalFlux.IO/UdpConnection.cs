@@ -115,19 +115,11 @@ namespace SignalFlux.IO
             return new UdpStreamWrapper(this);
         }
 
-#if NET10_0
         /// <summary>Disposes the UDP connection asynchronously.</summary>
         public async ValueTask DisposeAsync()
         {
             await DisconnectAsync().ConfigureAwait(false);
         }
-#else
-        /// <summary>Disposes the UDP connection.</summary>
-        public void Dispose()
-        {
-            DisconnectAsync().GetAwaiter().GetResult();
-        }
-#endif
 
         private void ThrowIfNotConnected()
         {

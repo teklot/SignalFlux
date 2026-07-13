@@ -6,11 +6,7 @@ using System.Threading.Tasks;
 namespace SignalFlux.IO
 {
     /// <summary>Unified abstraction for duplex stream-based connections over TCP, UDP, Serial, or Named Pipes.</summary>
-#if NET10_0
     public interface IStreamConnection : IAsyncDisposable
-#else
-    public interface IStreamConnection : IDisposable
-#endif
     {
         /// <summary>The current state of the connection.</summary>
         ConnectionState State { get; }

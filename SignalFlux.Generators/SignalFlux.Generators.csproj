@@ -28,8 +28,4 @@
     <ProjectReference Include="..\SignalFlux.Core\SignalFlux.Core.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <None Include="RELEASE_NOTES.md" Pack="true" PackagePath="" />
-  </ItemGroup>
-
 </Project>

@@ -3,9 +3,10 @@ using SignalFlux;
 using SignalFlux.Generators;
 using SignalFlux.TimeSeries;
 using SignalFlux.Storage;
+using SignalFlux.Samples;
 using static System.Console;
 
-WriteLine("SignalFlux v0.1.0 — Engineering Computing for .NET");
+WriteLine("SignalFlux — Engineering Computing for .NET");
 WriteLine(new string('-', 50));
 
 var sine = new SineGenerator(frequency: 100, amplitude: 5.0);
@@ -82,5 +83,8 @@ await using (var reader = new CsvSignalReader(csvPath))
 
 File.Delete(csvPath);
 WriteLine("Cleanup done.");
+
+WriteLine("\n--- Live Acquisition Demo ---");
+await AcquisitionSample.RunAsync();
 
 WriteLine("\nSignalFlux is ready. Build something great.");

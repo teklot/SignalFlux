@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
-#if NET10_0
 using System.Threading.Tasks;
-#endif
 using SignalFlux;
 using UnitsNet.Units;
 

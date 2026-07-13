@@ -120,19 +120,11 @@ namespace SignalFlux.IO
             return _stream;
         }
 
-#if NET10_0
         /// <summary>Disposes the TCP connection asynchronously.</summary>
         public async ValueTask DisposeAsync()
         {
             await DisconnectAsync().ConfigureAwait(false);
         }
-#else
-        /// <summary>Disposes the TCP connection.</summary>
-        public void Dispose()
-        {
-            DisconnectAsync().GetAwaiter().GetResult();
-        }
-#endif
 
         private void ThrowIfNotConnected()
         {

@@ -8,11 +8,7 @@ using UnitsNet;
 namespace SignalFlux.Storage
 {
     /// <summary>Streaming CSV writer for signals and experiment metadata.</summary>
-#if NET10_0
     public sealed class CsvSignalWriter : IAsyncDisposable
-#else
-    public sealed class CsvSignalWriter : IDisposable
-#endif
     {
         private readonly StreamWriter _writer;
         private bool _headerWritten;
@@ -69,19 +65,11 @@ namespace SignalFlux.Storage
             await _writer.WriteLineAsync().ConfigureAwait(false);
         }
 
-#if NET10_0
         /// <summary>Disposes the writer, flushing remaining data.</summary>
         public ValueTask DisposeAsync()
         {
             _writer.Dispose();
             return default;
         }
-#else
-        /// <summary>Disposes the writer, flushing remaining data.</summary>
-        public void Dispose()
-        {
-            _writer.Dispose();
-        }
-#endif
     }
 }

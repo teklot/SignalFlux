@@ -9,11 +9,7 @@ using UnitsNet;
 namespace SignalFlux.Storage
 {
     /// <summary>CSV reader for signals, supporting both in-memory and streaming reads.</summary>
-#if NET10_0
     public sealed class CsvSignalReader : IAsyncDisposable
-#else
-    public sealed class CsvSignalReader : IDisposable
-#endif
     {
         private readonly StreamReader _reader;
         private bool _headerSkipped;
@@ -118,7 +114,9 @@ namespace SignalFlux.Storage
             if (samples.Count > 0)
             {
                 double totalSeconds = (lastTimestamp - startTime).TotalSeconds;
-                double frequency = samples.Count / Math.Max(totalSeconds, 1e-6);
+                double frequency = samples.Count > 1
+                    ? (samples.Count - 1) / Math.Max(totalSeconds, 1e-6)
+                    : 0;
                 result.Add(new Signal<double>(samples.ToArray(), frequency, startTime, unit, source: source));
             }
 
@@ -182,7 +180,7 @@ namespace SignalFlux.Storage
                 if (samples.Count >= samplesPerChunk)
                 {
                     double totalSeconds = (lastTimestamp - startTime).TotalSeconds;
-                    double frequency = samplesPerChunk / Math.Max(totalSeconds, 1e-6);
+                    double frequency = (samplesPerChunk - 1) / Math.Max(totalSeconds, 1e-6);
                     yield return new Signal<double>(samples.ToArray(), frequency, startTime, unit, source: source);
                     samples.Clear();
                     hasData = false;
@@ -192,25 +190,19 @@ namespace SignalFlux.Storage
             if (samples.Count > 0)
             {
                 double totalSeconds = (lastTimestamp - startTime).TotalSeconds;
-                double frequency = samples.Count / Math.Max(totalSeconds, 1e-6);
+                double frequency = samples.Count > 1
+                    ? (samples.Count - 1) / Math.Max(totalSeconds, 1e-6)
+                    : 0;
                 yield return new Signal<double>(samples.ToArray(), frequency, startTime, unit, source: source);
             }
         }
 #endif
 
-#if NET10_0
         /// <summary>Disposes the reader.</summary>
         public ValueTask DisposeAsync()
         {
             _reader.Dispose();
             return default;
         }
-#else
-        /// <summary>Disposes the reader.</summary>
-        public void Dispose()
-        {
-            _reader.Dispose();
-        }
-#endif
     }
 }

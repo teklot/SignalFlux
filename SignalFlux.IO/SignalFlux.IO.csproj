@@ -35,10 +35,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SignalFlux.Core\SignalFlux.Core.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="RELEASE_NOTES.md" Pack="true" PackagePath="" />
+    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="10.0.9" />
   </ItemGroup>
 
 </Project>

@@ -27,7 +27,7 @@ No two implementations agree. Units are `"V"` in one place, `"Volt"` in another,
 
 ## How It Works
 
-The entire domain model lives in `SignalFlux.Core` — **zero third-party runtime dependencies** on either .NET 10 or .NET Standard 2.0.
+The entire domain model lives in `SignalFlux.Core` — **built on UnitsNet for compile-time-safe units** with no other third-party runtime dependencies on either .NET 10 or .NET Standard 2.0.
 
 ```
 ┌──────────────────────────────────────────────────────────────┐
@@ -179,13 +179,13 @@ Every `Measurement` has a `Timestamp` and `Source`. Every `Experiment` captures 
 
 ## Packages
 
-| Package | Description | Status |
-|---|---|---|
-| **SignalFlux.Core** | Core domain model: `Signal<T>`, `Measurement<T>`, `Event`, `Experiment`, `Session`, `Result<T>`, `Metadata`, `Timestamp`, `Window`, `Range<T>`, `Quality` | Phase 1 |
-| **SignalFlux.TimeSeries** | Time-series operations: resampling, interpolation, alignment, windowing, statistics, downsampling | Phase 1 |
-| **SignalFlux.Generators** | Signal generators: sine, square, noise, ramp, sawtooth, random walk | Phase 1 |
-| **SignalFlux.IO** | Unified stream connection abstraction: TCP, UDP, Serial, Named Pipes with async, cancellation, timeouts | Phase 2 |
-| **SignalFlux.Storage** | CSV storage adapters: streaming read/write, `ISignalStore`/`IExperimentStore` interfaces | Phase 2 |
+| Package | Description |
+|---|---|
+| **SignalFlux.Core** | Core domain model: `Signal<T>`, `Measurement<T>`, `Event`, `Experiment`, `Session`, `Result<T>`, `Metadata`, `Timestamp`, `Window`, `Range<T>`, `Quality` |
+| **SignalFlux.TimeSeries** | Time-series operations: resampling, interpolation, alignment, windowing, statistics, downsampling |
+| **SignalFlux.Generators** | Signal generators: sine, square, noise, ramp, sawtooth, random walk |
+| **SignalFlux.IO** | Unified stream connection abstraction: TCP, UDP, Serial, Named Pipes with async, cancellation, timeouts |
+| **SignalFlux.Storage** | CSV streaming read/write, SQLite & Parquet backends, `ISignalStore`/`IExperimentStore` interfaces, `SignalReplayer` |
 
 ## Installation
 
@@ -193,6 +193,8 @@ Every `Measurement` has a `Timestamp` and `Source`. Every `Experiment` captures 
 dotnet add package SignalFlux.Core
 dotnet add package SignalFlux.TimeSeries
 dotnet add package SignalFlux.Generators
+dotnet add package SignalFlux.IO
+dotnet add package SignalFlux.Storage
 ```
 
 > UnitsNet is automatically included as a dependency of SignalFlux.Core. Add `using UnitsNet.Units;` to access typed unit enums like `ElectricPotentialUnit.Volt`, `TemperatureUnit.DegreeCelsius`, etc.
@@ -375,9 +377,12 @@ An enum describing data confidence: `Unknown`, `Good`, `Fair`, `Poor`, `Bad`, `I
 ### Phase 1 — Foundation ✓
 - SignalFlux.Core, TimeSeries, Generators — all delivered
 
-### Phase 2 — Data Acquisition (partial ✓)
-- **Delivered:** IO (TCP, UDP, Serial, Named Pipes); Storage (CSV read/write, interfaces)
-- **Pending future release:** SQLite and Parquet storage backends; live acquisition sample; replay support for recorded sessions
+### Phase 2 — Data Acquisition ✓
+- **SignalFlux.IO:** Unified `IStreamConnection` abstraction with TCP, UDP, Serial, Named Pipes adapters (async, cancellation, timeouts)
+- **SignalFlux.Storage:** CSV streaming read/write, `ISignalStore`/`IExperimentStore` interfaces, SQLite (`SqliteSignalStore`, `SqliteExperimentStore`), Parquet (`ParquetSignalStore`) storage backends
+- **SignalReplayer:** Replay signals from any `ISignalStore` with original timing support, integrated with `Session.CanReplay` flag
+- **Samples:** Live acquisition pipeline demo (simulated sensor → TCP → Signal → CSV + SQLite)
+- **Tests:** 48 unit tests covering all IO, storage, and replay functionality
 
 ### Phase 3 — Ecosystem (planned)
 - Protocol adapters: MAVLink, Modbus, NMEA 0183

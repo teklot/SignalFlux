@@ -102,19 +102,11 @@ namespace SignalFlux.IO
             return _pipe;
         }
 
-#if NET10_0
         /// <summary>Disposes the pipe connection asynchronously.</summary>
         public async ValueTask DisposeAsync()
         {
             await DisconnectAsync().ConfigureAwait(false);
         }
-#else
-        /// <summary>Disposes the pipe connection.</summary>
-        public void Dispose()
-        {
-            DisconnectAsync().GetAwaiter().GetResult();
-        }
-#endif
 
         private void ThrowIfNotConnected()
         {

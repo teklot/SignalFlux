@@ -8,13 +8,13 @@
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <Title>SignalFlux.Storage</Title>
     <Authors>TekLot,$(AssemblyName)</Authors>
-    <Description>SignalFlux.Storage provides storage adapters for Signal&lt;T&gt; and Experiment with CSV streaming, round-trip serialization, and extensible adapter interfaces.</Description>
+    <Description>SignalFlux.Storage provides CSV, SQLite, and Parquet storage backends for Signal&lt;T&gt; and Experiment, plus ISignalStore/IExperimentStore interfaces and SignalReplayer for timed replay.</Description>
     <Copyright>Copyright © 2026 TekLot</Copyright>
     <PackageId>SignalFlux.Storage</PackageId>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
-    <PackageTags>SignalFlux;Storage;CSV;Serialization;DataPersistence;dotnet-library</PackageTags>
-    <PackageReleaseNotes>Provides CSV streaming read and write for Signal&lt;T&gt; along with ISignalStore and IExperimentStore interfaces for extensible data persistence.</PackageReleaseNotes>
+    <PackageTags>SignalFlux;Storage;CSV;SQLite;Parquet;SignalReplayer;Serialization;DataPersistence;dotnet-library</PackageTags>
+    <PackageReleaseNotes>Provides CSV streaming, SQLite (SqliteSignalStore, SqliteExperimentStore), and Parquet (ParquetSignalStore) storage backends for Signal&lt;T&gt; and Experiment, plus SignalReplayer for timed replay from any ISignalStore.</PackageReleaseNotes>
     <PackageProjectUrl>https://github.com/teklot/signalflux</PackageProjectUrl>
     <RepositoryUrl>https://github.com/teklot/signalflux.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
@@ -30,10 +30,11 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SignalFlux.Core\SignalFlux.Core.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="RELEASE_NOTES.md" Pack="true" PackagePath="" />
+    <PackageReference Include="Microsoft.Data.Sqlite" Version="10.0.0" />
+    <PackageReference Include="Parquet.Net" Version="5.0.2" />
+    <PackageReference Include="Snappier" Version="1.3.1" />
+    <PackageReference Include="SQLitePCLRaw.lib.e_sqlite3" Version="3.50.3" />
+    <PackageReference Include="System.Text.Json" Version="10.0.9" />
   </ItemGroup>
 
 </Project>
