@@ -1,7 +1,7 @@
 # SignalFlux — Engineering Computing for .NET
 
 [![CI](https://github.com/teklot/SignalFlux/actions/workflows/ci.yml/badge.svg)](https://github.com/teklot/SignalFlux/actions/workflows/ci.yml)
-[![NuGet Version](https://img.shields.io/nuget/v/SignalFlux.Core)](https://www.nuget.org/packages/SignalFlux.Core)
+[![NuGet Version](https://img.shields.io/nuget/v/SignalFlux)](https://www.nuget.org/packages/SignalFlux)
 [![.NET](https://img.shields.io/badge/.NET-net10.0%20%7C%20netstandard2.0-blue)](https://dotnet.microsoft.com/)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue)](LICENSE)
 
@@ -27,11 +27,11 @@ No two implementations agree. Units are `"V"` in one place, `"Volt"` in another,
 
 ## How It Works
 
-The entire domain model lives in `SignalFlux.Core` — **built on UnitsNet for compile-time-safe units** with no other third-party runtime dependencies on either .NET 10 or .NET Standard 2.0.
+The entire domain model lives in `SignalFlux` — **built on UnitsNet for compile-time-safe units** with no other third-party runtime dependencies on either .NET 10 or .NET Standard 2.0.
 
 ```
 ┌──────────────────────────────────────────────────────────────┐
-│                       SignalFlux.Core                        │
+│                       SignalFlux                        │
 │  ┌────────────────┐  ┌────────────────┐  ┌────────────────┐  │
 │  │   Signal<T>    │  │ Measurement<T> │  │     Event      │  │
 │  │   .Samples     │  │   .Value       │  │   .Severity    │  │
@@ -181,7 +181,7 @@ Every `Measurement` has a `Timestamp` and `Source`. Every `Experiment` captures 
 
 | Package | Description |
 |---|---|
-| **SignalFlux.Core** | Core domain model: `Signal<T>`, `Measurement<T>`, `Event`, `Experiment`, `Session`, `Result<T>`, `Metadata`, `Timestamp`, `Window`, `Range<T>`, `Quality` |
+| **SignalFlux** | Core domain model: `Signal<T>`, `Measurement<T>`, `Event`, `Experiment`, `Session`, `Result<T>`, `Metadata`, `Timestamp`, `Window`, `Range<T>`, `Quality` |
 | **SignalFlux.TimeSeries** | Time-series operations: resampling, interpolation, alignment, windowing, statistics, downsampling |
 | **SignalFlux.Generators** | Signal generators: sine, square, noise, ramp, sawtooth, random walk |
 | **SignalFlux.IO** | Unified stream connection abstraction: TCP, UDP, Serial, Named Pipes with async, cancellation, timeouts |
@@ -190,14 +190,14 @@ Every `Measurement` has a `Timestamp` and `Source`. Every `Experiment` captures 
 ## Installation
 
 ```shell
-dotnet add package SignalFlux.Core
+dotnet add package SignalFlux
 dotnet add package SignalFlux.TimeSeries
 dotnet add package SignalFlux.Generators
 dotnet add package SignalFlux.IO
 dotnet add package SignalFlux.Storage
 ```
 
-> UnitsNet is automatically included as a dependency of SignalFlux.Core. Add `using UnitsNet.Units;` to access typed unit enums like `ElectricPotentialUnit.Volt`, `TemperatureUnit.DegreeCelsius`, etc.
+> UnitsNet is automatically included as a dependency of SignalFlux. Add `using UnitsNet.Units;` to access typed unit enums like `ElectricPotentialUnit.Volt`, `TemperatureUnit.DegreeCelsius`, etc.
 
 ## Quick Start
 
@@ -375,7 +375,7 @@ An enum describing data confidence: `Unknown`, `Good`, `Fair`, `Poor`, `Bad`, `I
 ## Roadmap
 
 ### Phase 1 — Foundation ✓
-- SignalFlux.Core, TimeSeries, Generators — all delivered
+- SignalFlux, TimeSeries, Generators — all delivered
 
 ### Phase 2 — Data Acquisition ✓
 - **SignalFlux.IO:** Unified `IStreamConnection` abstraction with TCP, UDP, Serial, Named Pipes adapters (async, cancellation, timeouts)

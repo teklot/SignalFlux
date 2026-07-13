@@ -6,11 +6,11 @@
     <SatelliteResourceLanguages>en-US</SatelliteResourceLanguages>
     <Nullable>disable</Nullable>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
-    <Title>SignalFlux.Core</Title>
+    <Title>SignalFlux</Title>
     <Authors>TekLot,$(AssemblyName)</Authors>
-    <Description>SignalFlux.Core is the foundational package for the SignalFlux engineering computing ecosystem. Provides core domain types: Signal&lt;T&gt;, Measurement&lt;T&gt;, Event, Experiment, Session, Result&lt;T&gt;, Metadata, and more.</Description>
+    <Description>SignalFlux is the foundational package for the SignalFlux engineering computing ecosystem. Provides core domain types: Signal&lt;T&gt;, Measurement&lt;T&gt;, Event, Experiment, Session, Result&lt;T&gt;, Metadata, and more.</Description>
     <Copyright>Copyright © 2026 TekLot</Copyright>
-    <PackageId>SignalFlux.Core</PackageId>
+    <PackageId>SignalFlux</PackageId>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageTags>SignalFlux;Signal;Measurement;Engineering;Telemetry;TimeSeries;DataAcquisition;Scientific;DomainModel;dotnet-library</PackageTags>

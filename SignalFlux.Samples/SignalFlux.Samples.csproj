@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SignalFlux.Core\SignalFlux.Core.csproj" />
+    <ProjectReference Include="..\SignalFlux\SignalFlux.csproj" />
     <ProjectReference Include="..\SignalFlux.TimeSeries\SignalFlux.TimeSeries.csproj" />
     <ProjectReference Include="..\SignalFlux.Generators\SignalFlux.Generators.csproj" />
     <ProjectReference Include="..\SignalFlux.Storage\SignalFlux.Storage.csproj" />

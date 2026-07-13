@@ -5,7 +5,7 @@
     <File Path="README.md" />
     <File Path="publish-all.ps1" />
   </Folder>
-  <Project Path="SignalFlux.Core/SignalFlux.Core.csproj" />
+  <Project Path="SignalFlux/SignalFlux.csproj" />
   <Project Path="SignalFlux.TimeSeries/SignalFlux.TimeSeries.csproj" />
   <Project Path="SignalFlux.Generators/SignalFlux.Generators.csproj" />
   <Project Path="SignalFlux.Tests/SignalFlux.Tests.csproj" />

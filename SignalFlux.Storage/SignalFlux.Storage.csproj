@@ -29,7 +29,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SignalFlux.Core\SignalFlux.Core.csproj" />
+    <ProjectReference Include="..\SignalFlux\SignalFlux.csproj" />
     <PackageReference Include="Microsoft.Data.Sqlite" Version="10.0.0" />
     <PackageReference Include="Parquet.Net" Version="5.0.2" />
     <PackageReference Include="Snappier" Version="1.3.1" />
