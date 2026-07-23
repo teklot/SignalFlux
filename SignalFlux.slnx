@@ -10,7 +10,8 @@
   <Project Path="SignalFlux.Generators/SignalFlux.Generators.csproj" />
   <Project Path="SignalFlux.Tests/SignalFlux.Tests.csproj" />
   <Project Path="SignalFlux.Benchmark/SignalFlux.Benchmark.csproj" />
-  <Project Path="SignalFlux.Samples/SignalFlux.Samples.csproj" />
+  <Project Path="SignalFlux.Console/SignalFlux.Console.csproj" />
   <Project Path="SignalFlux.IO/SignalFlux.IO.csproj" />
   <Project Path="SignalFlux.Storage/SignalFlux.Storage.csproj" />
+  <Project Path="SignalFlux.Protocols/SignalFlux.Protocols.csproj" />
 </Solution>

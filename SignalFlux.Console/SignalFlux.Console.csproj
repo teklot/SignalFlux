@@ -14,6 +14,7 @@
     <ProjectReference Include="..\SignalFlux.Generators\SignalFlux.Generators.csproj" />
     <ProjectReference Include="..\SignalFlux.Storage\SignalFlux.Storage.csproj" />
     <ProjectReference Include="..\SignalFlux.IO\SignalFlux.IO.csproj" />
+    <ProjectReference Include="..\SignalFlux.Protocols\SignalFlux.Protocols.csproj" />
   </ItemGroup>
 
 </Project>

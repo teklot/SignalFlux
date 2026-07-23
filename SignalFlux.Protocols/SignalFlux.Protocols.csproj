@@ -1,0 +1,40 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0;net10.0</TargetFrameworks>
+    <LangVersion>latest</LangVersion>
+    <SatelliteResourceLanguages>en-US</SatelliteResourceLanguages>
+    <Nullable>disable</Nullable>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
+    <Title>SignalFlux.Protocols</Title>
+    <Authors>TekLot,$(AssemblyName)</Authors>
+    <Description>SignalFlux.Protocol signalFlux provides protocol adapters for Modbus, MAVLink, and NMEA 0183, bridging Signal&lt;T&gt; and Measurement&lt;T&gt; with real-world protocol data.</Description>
+    <Copyright>Copyright © 2026 TekLot</Copyright>
+    <PackageId>SignalFlux.Protocols</PackageId>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageTags>SignalFlux;Protocols;Modbus;MAVLink;NMEA0183;Industrial;Avionics;Engineering;dotnet-library</PackageTags>
+    <PackageReleaseNotes>Modbus register encoding with scale/offset/clamping, MAVLink v2 frame encode/decode with runtime dialect loading, NMEA 0183 sentence conversion (GGA, RMC, VTG, GSA, GSV, GLL) to Measurement&lt;T&gt;.</PackageReleaseNotes>
+    <PackageProjectUrl>https://github.com/teklot/signalflux</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/teklot/signalflux.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+  </PropertyGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="9.0.5" />
+    <PackageReference Include="System.Memory" Version="4.6.3" />
+    <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.6.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SignalFlux\SignalFlux.csproj" />
+    <PackageReference Include="NModbus" Version="3.0.83" />
+    <PackageReference Include="MavLinkSharp" Version="1.9.0" />
+    <PackageReference Include="SharpGIS.NmeaParser" Version="3.0.0" />
+  </ItemGroup>
+
+</Project>

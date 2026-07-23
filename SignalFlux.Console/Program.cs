@@ -3,7 +3,7 @@ using SignalFlux;
 using SignalFlux.Generators;
 using SignalFlux.TimeSeries;
 using SignalFlux.Storage;
-using SignalFlux.Samples;
+using SignalFlux.Console;
 using static System.Console;
 
 WriteLine("SignalFlux — Engineering Computing for .NET");
@@ -85,6 +85,18 @@ File.Delete(csvPath);
 WriteLine("Cleanup done.");
 
 WriteLine("\n--- Live Acquisition Demo ---");
-await AcquisitionSample.RunAsync();
+try
+{
+    await AcquisitionSample.RunAsync();
+}
+catch (Exception ex)
+{
+    WriteLine($"Acquisition demo skipped: {ex.Message}");
+}
+
+WriteLine("\n--- Protocol Adapters Demo ---");
+ProtocolSamples.RunModbusSample();
+ProtocolSamples.RunMavlinkSample();
+ProtocolSamples.RunNmeaSample();
 
 WriteLine("\nSignalFlux is ready. Build something great.");

@@ -6,11 +6,12 @@ param(
 
 $root = Split-Path $PSCommandPath -Parent
 $packages = @(
-    "SignalFlux\bin\Release\SignalFlux.0.3.0.nupkg"
-    "SignalFlux.IO\bin\Release\SignalFlux.IO.0.3.0.nupkg"
-    "SignalFlux.Storage\bin\Release\SignalFlux.Storage.0.3.0.nupkg"
-    "SignalFlux.TimeSeries\bin\Release\SignalFlux.TimeSeries.0.3.0.nupkg"
-    "SignalFlux.Generators\bin\Release\SignalFlux.Generators.0.3.0.nupkg"
+    "SignalFlux\bin\Release\SignalFlux.0.4.0.nupkg"
+    "SignalFlux.IO\bin\Release\SignalFlux.IO.0.4.0.nupkg"
+    "SignalFlux.Storage\bin\Release\SignalFlux.Storage.0.4.0.nupkg"
+    "SignalFlux.TimeSeries\bin\Release\SignalFlux.TimeSeries.0.4.0.nupkg"
+    "SignalFlux.Generators\bin\Release\SignalFlux.Generators.0.4.0.nupkg"
+    "SignalFlux.Protocols\bin\Release\SignalFlux.Protocols.0.4.0.nupkg"
 )
 
 foreach ($pkg in $packages) {

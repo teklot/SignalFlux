@@ -31,7 +31,7 @@ The entire domain model lives in `SignalFlux` — **built on UnitsNet for compil
 
 ```
 ┌──────────────────────────────────────────────────────────────┐
-│                       SignalFlux                        │
+│                       SignalFlux                             │
 │  ┌────────────────┐  ┌────────────────┐  ┌────────────────┐  │
 │  │   Signal<T>    │  │ Measurement<T> │  │     Event      │  │
 │  │   .Samples     │  │   .Value       │  │   .Severity    │  │
@@ -186,6 +186,7 @@ Every `Measurement` has a `Timestamp` and `Source`. Every `Experiment` captures 
 | **SignalFlux.Generators** | Signal generators: sine, square, noise, ramp, sawtooth, random walk |
 | **SignalFlux.IO** | Unified stream connection abstraction: TCP, UDP, Serial, Named Pipes with async, cancellation, timeouts |
 | **SignalFlux.Storage** | CSV streaming read/write, SQLite & Parquet backends, `ISignalStore`/`IExperimentStore` interfaces, `SignalReplayer` |
+| **SignalFlux.Protocols** | Protocol adapters for Modbus, MAVLink, and NMEA 0183 — bridge `Signal<T>` and `Measurement<T>` with real-world protocol data |
 
 ## Installation
 
@@ -195,6 +196,7 @@ dotnet add package SignalFlux.TimeSeries
 dotnet add package SignalFlux.Generators
 dotnet add package SignalFlux.IO
 dotnet add package SignalFlux.Storage
+dotnet add package SignalFlux.Protocols
 ```
 
 > UnitsNet is automatically included as a dependency of SignalFlux. Add `using UnitsNet.Units;` to access typed unit enums like `ElectricPotentialUnit.Volt`, `TemperatureUnit.DegreeCelsius`, etc.
@@ -382,11 +384,10 @@ An enum describing data confidence: `Unknown`, `Good`, `Fair`, `Poor`, `Bad`, `I
 - **SignalFlux.Storage:** CSV streaming read/write, `ISignalStore`/`IExperimentStore` interfaces, SQLite (`SqliteSignalStore`, `SqliteExperimentStore`), Parquet (`ParquetSignalStore`) storage backends
 - **SignalReplayer:** Replay signals from any `ISignalStore` with original timing support, integrated with `Session.CanReplay` flag
 - **Samples:** Live acquisition pipeline demo (simulated sensor → TCP → Signal → CSV + SQLite)
-- **Tests:** 48 unit tests covering all IO, storage, and replay functionality
 
-### Phase 3 — Ecosystem (planned)
-- Protocol adapters: MAVLink, Modbus, NMEA 0183
-- Visualization adapters: ScottPlot, OxyPlot
+### Phase 3 — Ecosystem (partial)
+- **SignalFlux.Protocols:** Protocol adapters for Modbus (`ModbusSignalExtensions`, `ModbusConnectionAdapter`), MAVLink v2 (`MavlinkSignalExtensions`, `MavlinkConnectionAdapter`), and NMEA 0183 (`NmeaSentenceExtensions`, `NmeaConnectionAdapter`) — scale/offset/clamping, Signal/Measurement conversion, runtime dialect loading
+- Visualization adapters: ScottPlot, OxyPlot (planned)
 
 ### Phase 4 — Industry Integrations (planned)
 - OPC UA, CAN bus, device adapters, ML.NET / ONNX integration
