@@ -99,4 +99,14 @@ ProtocolSamples.RunModbusSample();
 ProtocolSamples.RunMavlinkSample();
 ProtocolSamples.RunNmeaSample();
 
+WriteLine("\n--- Visualization Adapters Demo ---");
+try
+{
+    VisualizationSamples.RunScottPlotSample();
+}
+catch (Exception ex)
+{
+    WriteLine($"Visualization demo skipped: {ex.Message}");
+}
+
 WriteLine("\nSignalFlux is ready. Build something great.");

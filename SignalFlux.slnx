@@ -3,7 +3,6 @@
     <File Path="Directory.Build.props" />
     <File Path="LICENSE" />
     <File Path="README.md" />
-    <File Path="publish-all.ps1" />
   </Folder>
   <Project Path="SignalFlux/SignalFlux.csproj" />
   <Project Path="SignalFlux.TimeSeries/SignalFlux.TimeSeries.csproj" />

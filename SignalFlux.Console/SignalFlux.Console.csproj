@@ -17,4 +17,8 @@
     <ProjectReference Include="..\SignalFlux.Protocols\SignalFlux.Protocols.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="ScottPlot" Version="5.1.59" />
+  </ItemGroup>
+
 </Project>

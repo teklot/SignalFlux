@@ -7,7 +7,7 @@
 
 Every engineering team I've worked with builds the same thing: a `Signal` class, a `Measurement` struct, a way to carry units, a timestamp type, some quality enum. Usually scattered across five repos, each with different design choices, none composable, all tied to a specific vendor or protocol. Data never flows between systems without custom glue code.
 
-SignalFlux is the canonical domain model for engineering data on .NET — **the vocabulary that makes different systems speak the same language.** Not a math library, not a plotting engine, not a protocol. A shared type system that sits between your hardware and your analysis, giving every voltage reading, every temperature measurement, every experiment the same shape regardless of source.
+SignalFlux is the domain model for engineering data on .NET — **the vocabulary that makes different systems speak the same language.** Not a math library, not a plotting engine, not a protocol. A shared type system that sits between your hardware and your analysis, giving every voltage reading, every temperature measurement, every experiment the same shape regardless of source.
 
 **Guiding principle:** Never replace mature libraries. Standardize how they work together.
 
@@ -140,6 +140,34 @@ var session = new Session("SES-001", experiments: new[] { exp }, canReplay: true
 ```
 
 `Experiment` groups related signals and events. `Session` groups experiments and replay metadata. Both are sealed classes with structural equality — not base types to extend.
+
+### Visualization Without Conversion Code
+
+SignalFlux types compose directly with plotting libraries — no manual `xs`/`ys` extraction, no time-axis conversion. A small adapter extension method bridges the gap:
+
+```csharp
+// Example: plotting a Signal<double> with ScottPlot 5
+using SignalFlux;
+
+public static ScottPlot.Plottables.Signal AddSignal<T>(
+    this ScottPlot.Plot plot, Signal<T> signal, string label = null)
+{
+    var ys = signal.Samples.Span.ToArray().Select(x => Convert.ToDouble(x)).ToArray();
+    var result = plot.Add.Signal(ys);
+    result.Data.XOffset = signal.StartTime.DateTime.ToOADate();
+    result.Data.Period = signal.SampleInterval.TotalDays;
+    plot.Axes.DateTimeTicksBottom();
+    if (signal.Unit != null) plot.YLabel(signal.Unit.ToString());
+    return result;
+}
+
+// Usage — the signal becomes a native plottable on a real time axis:
+var plot = new ScottPlot.Plot();
+plot.AddSignal(voltageSignal, "Voltage");
+plot.AddSignal(currentSignal, "Current");
+```
+
+The pattern is the same for OxyPlot, LiveCharts, or any library that accepts x/y arrays: convert to `OADate` for time, use the UnitsNet unit for the axis label. The `Experiment` and `Event` types map to annotations and multi-series overlays the same way.
 
 ## Use Cases
 
@@ -385,9 +413,8 @@ An enum describing data confidence: `Unknown`, `Good`, `Fair`, `Poor`, `Bad`, `I
 - **SignalReplayer:** Replay signals from any `ISignalStore` with original timing support, integrated with `Session.CanReplay` flag
 - **Samples:** Live acquisition pipeline demo (simulated sensor → TCP → Signal → CSV + SQLite)
 
-### Phase 3 — Ecosystem (partial)
+### Phase 3 — Ecosystem ✓
 - **SignalFlux.Protocols:** Protocol adapters for Modbus (`ModbusSignalExtensions`, `ModbusConnectionAdapter`), MAVLink v2 (`MavlinkSignalExtensions`, `MavlinkConnectionAdapter`), and NMEA 0183 (`NmeaSentenceExtensions`, `NmeaConnectionAdapter`) — scale/offset/clamping, Signal/Measurement conversion, runtime dialect loading
-- Visualization adapters: ScottPlot, OxyPlot (planned)
 
 ### Phase 4 — Industry Integrations (planned)
 - OPC UA, CAN bus, device adapters, ML.NET / ONNX integration
