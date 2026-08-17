@@ -13,4 +13,5 @@
   <Project Path="SignalFlux.IO/SignalFlux.IO.csproj" />
   <Project Path="SignalFlux.Storage/SignalFlux.Storage.csproj" />
   <Project Path="SignalFlux.Protocols/SignalFlux.Protocols.csproj" />
+  <Project Path="SignalFlux.OpcUa/SignalFlux.OpcUa.csproj" />
 </Solution>

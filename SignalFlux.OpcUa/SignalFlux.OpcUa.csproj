@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.1;net10.0</TargetFrameworks>
+    <LangVersion>latest</LangVersion>
+    <SatelliteResourceLanguages>en-US</SatelliteResourceLanguages>
+    <Nullable>disable</Nullable>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
+    <Title>SignalFlux.OpcUa</Title>
+    <Authors>TekLot,$(AssemblyName)</Authors>
+    <Description>OPC UA client adapter for SignalFlux — connect, read, subscribe, and browse OPC UA servers with Signal&lt;T&gt; and Measurement&lt;T&gt; types.</Description>
+    <Copyright>Copyright © 2026 TekLot</Copyright>
+    <PackageId>SignalFlux.OpcUa</PackageId>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageTags>SignalFlux;Protocols;OPC;OPCUA;Industrial;SCADA;Engineering;dotnet-library</PackageTags>
+    <PackageReleaseNotes>OPC UA client adapter with anonymous connection, node read, subscription, and address space browsing.</PackageReleaseNotes>
+    <PackageProjectUrl>https://github.com/teklot/signalflux</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/teklot/signalflux.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SignalFlux\SignalFlux.csproj" />
+    <PackageReference Include="OPCFoundation.NetStandard.Opc.Ua.Client" Version="1.5.378.*" />
+  </ItemGroup>
+
+</Project>

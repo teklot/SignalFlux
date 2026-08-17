@@ -20,7 +20,7 @@ namespace SignalFlux.Console.Visualization.ScottPlot
         /// <param name="plot">The plot to add to.</param>
         /// <param name="signal">The signal to plot.</param>
         /// <param name="label">Optional legend label.</param>
-        public static SSignal AddSignal<T>(this SPlot plot, Signal<T> signal, string label = null)
+        public static SSignal AddSignal<T>(this SPlot plot, Signal<T> signal, string? label = null)
         {
             var ys = PlotData.ToDoubles(signal.Samples);
             var result = plot.Add.Signal(ys);
@@ -42,7 +42,7 @@ namespace SignalFlux.Console.Visualization.ScottPlot
         /// <param name="plot">The plot to add to.</param>
         /// <param name="signal">The signal to plot.</param>
         /// <param name="label">Optional legend label.</param>
-        public static SScatter AddScatter<T>(this SPlot plot, Signal<T> signal, string label = null)
+        public static SScatter AddScatter<T>(this SPlot plot, Signal<T> signal, string? label = null)
         {
             var ys = PlotData.ToDoubles(signal.Samples);
             var xs = new double[ys.Length];
@@ -69,7 +69,7 @@ namespace SignalFlux.Console.Visualization.ScottPlot
         /// <param name="plot">The plot to add to.</param>
         /// <param name="measurements">The measurements to plot.</param>
         /// <param name="label">Optional legend label.</param>
-        public static SScatter AddMeasurements<T>(this SPlot plot, IEnumerable<Measurement<T>> measurements, string label = null)
+        public static SScatter AddMeasurements<T>(this SPlot plot, IEnumerable<Measurement<T>> measurements, string? label = null)
         {
             var list = new List<Measurement<T>>(measurements);
             var xs = new double[list.Count];
@@ -112,7 +112,7 @@ namespace SignalFlux.Console.Visualization.ScottPlot
         /// <param name="plot">The plot to add to.</param>
         /// <param name="experiment">The experiment to visualize.</param>
         /// <param name="title">Optional plot title.</param>
-        public static SPlot AddExperiment(this SPlot plot, Experiment experiment, string title = null)
+        public static SPlot AddExperiment(this SPlot plot, Experiment experiment, string? title = null)
         {
             foreach (var entry in experiment.Signals)
                 TryAddSignal(plot, entry.Key, entry.Value);

@@ -109,4 +109,13 @@ catch (Exception ex)
     WriteLine($"Visualization demo skipped: {ex.Message}");
 }
 
+try
+{
+    await OpcUaSamples.RunSampleAsync();
+}
+catch (Exception ex)
+{
+    WriteLine($"OPC UA demo skipped: {ex.Message}");
+}
+
 WriteLine("\nSignalFlux is ready. Build something great.");
