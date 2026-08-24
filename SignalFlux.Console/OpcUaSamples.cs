@@ -15,8 +15,16 @@ namespace SignalFlux.Console
             OpcUaConnectionAdapter? adapter = null;
             try
             {
-                adapter = await OpcUaConnectionAdapter.ConnectAsync(DefaultServerUrl);
-                WriteLine($"Connected to: {DefaultServerUrl}");
+                var options = new OpcUaConnectionOptions
+                {
+                    ApplicationName = "SignalFlux.Demo",
+                };
+
+                adapter = await OpcUaConnectionAdapter.ConnectAsync(DefaultServerUrl, options);
+                adapter.OnStateChanged += (sender, e) =>
+                    WriteLine($"[state] {e.PreviousState} -> {e.NewState}");
+
+                WriteLine($"Connected to: {DefaultServerUrl} (state: {adapter.State})");
                 WriteLine();
 
                 var nodes = await adapter.BrowseAsync();
@@ -29,16 +37,29 @@ namespace SignalFlux.Console
 
                 try
                 {
-                    var measurement = await adapter.ReadNodeAsync("ns=2;s=Temperature");
-                    WriteLine($"Read node 'ns=2;s=Temperature':");
+                    var measurement = await adapter.ReadNodeWithUnitAsync("ns=2;s=Temperature");
+                    WriteLine("Read node 'ns=2;s=Temperature':");
                     WriteLine($"  Value:     {measurement.Value}");
+                    WriteLine($"  Unit:      {measurement.Unit?.GetType().Name ?? "(none)"}");
                     WriteLine($"  Timestamp: {measurement.Timestamp}");
                     WriteLine($"  Quality:   {measurement.Quality}");
+
+                    try
+                    {
+                        await adapter.WriteNodeAsync("ns=2;s=Temperature", measurement.Value);
+                        WriteLine("  Write back succeeded.");
+                    }
+                    catch (Exception writeEx)
+                    {
+                        WriteLine($"  Write skipped (node may be read-only): {writeEx.Message}");
+                    }
                 }
                 catch (Exception ex)
                 {
                     WriteLine($"Read demo skipped (no test node): {ex.Message}");
                 }
+
+                WriteLine();
             }
             catch (Exception ex)
             {

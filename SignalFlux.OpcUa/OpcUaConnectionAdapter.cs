@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Opc.Ua;
 using Opc.Ua.Client;
+using Opc.Ua.Configuration;
 
 namespace SignalFlux.Protocols.OpcUa
 {
@@ -32,47 +34,71 @@ namespace SignalFlux.Protocols.OpcUa
         public override string ToString() => $"{DisplayName} ({NodeId}) [{NodeClass}]";
     }
 
-    /// <summary>Wraps an OPC UA <see cref="ISession"/> to read, subscribe, and browse node values as SignalFlux <see cref="Measurement{T}"/>.</summary>
+    /// <summary>
+    /// Wraps an OPC UA <see cref="ISession"/> to read, write, subscribe, and browse node values as SignalFlux
+    /// <see cref="Measurement{T}"/> values. Supports anonymous and username/password authentication, application
+    /// certificate creation, automatic reconnection, and engineering-unit resolution.
+    /// </summary>
     public sealed class OpcUaConnectionAdapter : IAsyncDisposable
     {
-        private readonly ISession _session;
+        private readonly OpcUaConnectionOptions _options;
         private readonly List<Subscription> _subscriptions = new List<Subscription>();
+        private readonly object _stateLock = new object();
+        private ISession _session;
+        private SessionReconnectHandler _reconnectHandler;
         private bool _disposed;
+        private OpcUaConnectionState _state = OpcUaConnectionState.Connecting;
 
-        private OpcUaConnectionAdapter(ISession session)
+        private OpcUaConnectionAdapter(ISession session, OpcUaConnectionOptions options)
         {
             _session = session ?? throw new ArgumentNullException(nameof(session));
+            _options = options ?? throw new ArgumentNullException(nameof(options));
+            _session.KeepAlive += OnSessionKeepAlive;
+            SetState(OpcUaConnectionState.Connected);
         }
 
-        /// <summary>Connects to an OPC UA server and returns an adapter.</summary>
+        /// <summary>The underlying OPC UA session.</summary>
+        internal ISession Session => _session;
+
+        /// <summary>Gets the current connection state.</summary>
+        public OpcUaConnectionState State
+        {
+            get { lock (_stateLock) return _state; }
+        }
+
+        /// <summary>Raised whenever the connection state changes (e.g., Connected → Reconnecting after a network drop).</summary>
+        public event EventHandler<OpcUaConnectionStateChangedEventArgs> OnStateChanged;
+
+        /// <summary>Connects to an OPC UA server using explicit connection options.</summary>
         /// <param name="serverUrl">The OPC UA server URL (e.g., "opc.tcp://localhost:4840").</param>
-        /// <param name="applicationName">Application name for the OPC UA client.</param>
-        /// <param name="useSecurity">Whether to use security (default false for anonymous).</param>
+        /// <param name="options">Connection options; null uses all defaults (anonymous, no security).</param>
         /// <param name="ct">Cancellation token.</param>
         /// <returns>A connected <see cref="OpcUaConnectionAdapter"/>.</returns>
         public static async Task<OpcUaConnectionAdapter> ConnectAsync(
             string serverUrl,
-            string applicationName = "SignalFlux",
-            bool useSecurity = false,
+            OpcUaConnectionOptions options,
             CancellationToken ct = default)
         {
             if (string.IsNullOrEmpty(serverUrl))
                 throw new ArgumentException("Server URL cannot be null or empty.", nameof(serverUrl));
 
+            var opts = options ?? new OpcUaConnectionOptions();
+            string appName = opts.ApplicationName ?? "SignalFlux";
+
             var config = new ApplicationConfiguration
             {
-                ApplicationName = applicationName,
+                ApplicationName = appName,
                 ApplicationType = ApplicationType.Client,
-                ApplicationUri = $"urn:localhost:SignalFlux:{applicationName}",
+                ApplicationUri = $"urn:localhost:SignalFlux:{appName}",
                 SecurityConfiguration = new SecurityConfiguration
                 {
-                    AutoAcceptUntrustedCertificates = true,
+                    AutoAcceptUntrustedCertificates = opts.AutoAcceptUntrustedCertificates,
                     RejectSHA1SignedCertificates = false,
                     ApplicationCertificate = new CertificateIdentifier
                     {
                         StoreType = CertificateStoreType.Directory,
                         StorePath = "%LocalApplicationData%/SignalFlux/pki/own",
-                        SubjectName = applicationName,
+                        SubjectName = appName,
                     },
                     TrustedIssuerCertificates = new CertificateTrustList
                     {
@@ -92,28 +118,46 @@ namespace SignalFlux.Protocols.OpcUa
                 },
                 TransportQuotas = new TransportQuotas
                 {
-                    OperationTimeout = 15_000,
+                    OperationTimeout = opts.OperationTimeoutMs,
                 },
                 ClientConfiguration = new ClientConfiguration
                 {
-                    DefaultSessionTimeout = 60_000,
+                    DefaultSessionTimeout = opts.SessionTimeoutMs,
                 },
             };
 
             await config.ValidateAsync(ApplicationType.Client).ConfigureAwait(false);
 
-            config.CertificateValidator.CertificateValidation += (sender, e) =>
+            if (opts.AutoAcceptUntrustedCertificates)
             {
-                if (e.Error.StatusCode == StatusCodes.BadCertificateUntrusted)
-                    e.Accept = true;
-            };
+                config.CertificateValidator.CertificateValidation += (sender, e) =>
+                {
+                    if (e.Error.StatusCode == StatusCodes.BadCertificateUntrusted)
+                        e.Accept = true;
+                };
+            }
+
+            if (opts.CreateApplicationCertificate)
+            {
+                var application = new ApplicationInstance(telemetry: null)
+                {
+                    ApplicationName = appName,
+                    ApplicationType = ApplicationType.Client,
+                    ApplicationConfiguration = config,
+                };
+
+                await application.CheckApplicationInstanceCertificatesAsync(true, null, ct).ConfigureAwait(false);
+            }
 
             EndpointDescription endpointDescription = await CoreClientUtils
-                .SelectEndpointAsync(config, serverUrl, useSecurity, telemetry: null, ct)
+                .SelectEndpointAsync(config, serverUrl, opts.UseSecurity, telemetry: null, ct)
                 .ConfigureAwait(false);
 
             var endpointConfig = EndpointConfiguration.Create(config);
             var configuredEndpoint = new ConfiguredEndpoint(null, endpointDescription, endpointConfig);
+
+            IUserIdentity identity = BuildIdentity(opts.UserCredentials);
+            uint sessionTimeout = (uint)opts.SessionTimeoutMs;
 
             var sessionFactory = new DefaultSessionFactory(telemetry: null);
             ISession session = await sessionFactory.CreateAsync(
@@ -121,14 +165,106 @@ namespace SignalFlux.Protocols.OpcUa
                 configuredEndpoint,
                 false,
                 false,
-                applicationName,
-                60_000,
-                (IUserIdentity)null,
+                appName,
+                sessionTimeout,
+                identity,
                 (IList<string>)null,
                 ct).ConfigureAwait(false);
 
-            return new OpcUaConnectionAdapter(session);
+            return new OpcUaConnectionAdapter(session, opts);
         }
+
+        /// <summary>Connects to an OPC UA server anonymously with simple defaults (legacy overload).</summary>
+        /// <param name="serverUrl">The OPC UA server URL.</param>
+        /// <param name="applicationName">Application name for the OPC UA client.</param>
+        /// <param name="useSecurity">Whether to use message security.</param>
+        /// <param name="ct">Cancellation token.</param>
+        /// <returns>A connected <see cref="OpcUaConnectionAdapter"/>.</returns>
+        public static Task<OpcUaConnectionAdapter> ConnectAsync(
+            string serverUrl,
+            string applicationName = "SignalFlux",
+            bool useSecurity = false,
+            CancellationToken ct = default)
+        {
+            return ConnectAsync(serverUrl, new OpcUaConnectionOptions
+            {
+                ApplicationName = applicationName,
+                UseSecurity = useSecurity,
+            }, ct);
+        }
+
+        private static IUserIdentity BuildIdentity(OpcUaUserCredentials credentials)
+        {
+            if (credentials == null || string.IsNullOrEmpty(credentials.UserName))
+                return new UserIdentity(new AnonymousIdentityToken());
+
+            return new UserIdentity(
+                credentials.UserName,
+                Encoding.UTF8.GetBytes(credentials.Password ?? string.Empty));
+        }
+
+        // ------------------------------------------------------------------
+        // Write
+        // ------------------------------------------------------------------
+
+        /// <summary>Writes a value to a single OPC UA node.</summary>
+        /// <param name="nodeId">The node identifier to write.</param>
+        /// <param name="value">The value to write.</param>
+        /// <param name="ct">Cancellation token.</param>
+        /// <exception cref="ServiceResultException">Thrown when the server rejects the write.</exception>
+        public async Task WriteNodeAsync(
+            string nodeId,
+            double value,
+            CancellationToken ct = default)
+        {
+            if (string.IsNullOrEmpty(nodeId))
+                throw new ArgumentException("Node ID cannot be null or empty.", nameof(nodeId));
+
+            var collection = new WriteValueCollection
+            {
+                new WriteValue
+                {
+                    NodeId = NodeId.Parse(nodeId),
+                    AttributeId = Attributes.Value,
+                    Value = new DataValue(new Variant(value)),
+                }
+            };
+
+            WriteResponse response = await _session.WriteAsync(null, collection, ct).ConfigureAwait(false);
+
+            StatusCode status = response.Results.FirstOrDefault();
+            if (StatusCode.IsBad(status.Code))
+                throw new ServiceResultException(status.Code);
+        }
+
+        /// <summary>Writes values to multiple OPC UA nodes in a single batch call.</summary>
+        /// <param name="writes">Key/value pairs of node identifier and value.</param>
+        /// <param name="ct">Cancellation token.</param>
+        /// <returns>The per-node result statuses, in the same order as <paramref name="writes"/>.</returns>
+        public async Task<IReadOnlyList<StatusCode>> WriteNodesAsync(
+            IEnumerable<KeyValuePair<string, double>> writes,
+            CancellationToken ct = default)
+        {
+            if (writes == null) throw new ArgumentNullException(nameof(writes));
+
+            var items = writes.Select(kv => new WriteValue
+            {
+                NodeId = NodeId.Parse(kv.Key),
+                AttributeId = Attributes.Value,
+                Value = new DataValue(new Variant(kv.Value)),
+            }).ToArray();
+
+            if (items.Length == 0) return Array.Empty<StatusCode>();
+
+            var collection = new WriteValueCollection(items);
+            WriteResponse response = await _session.WriteAsync(null, collection, ct).ConfigureAwait(false);
+
+            return response.Results.ToList();
+        }
+
+        // ------------------------------------------------------------------
+        // Read
+        // ------------------------------------------------------------------
 
         /// <summary>Reads a single OPC UA node and returns it as a <see cref="Measurement{T}"/>.</summary>
         /// <param name="nodeId">The node identifier (e.g., "ns=2;s=Temperature").</param>
@@ -143,6 +279,73 @@ namespace SignalFlux.Protocols.OpcUa
             var id = NodeId.Parse(nodeId);
             DataValue dataValue = await _session.ReadValueAsync(id, ct).ConfigureAwait(false);
             return dataValue.ToMeasurement(source);
+        }
+
+        /// <summary>
+        /// Reads a single OPC UA node together with its EngineeringUnit property. When the server reports a unit
+        /// that maps to a known UnitsNet enum, the measurement carries the typed unit; otherwise the raw unit
+        /// symbol is stored in metadata under the key "eu".
+        /// </summary>
+        /// <param name="nodeId">The node identifier to read.</param>
+        /// <param name="source">Source identifier for the measurement.</param>
+        /// <param name="ct">Cancellation token.</param>
+        /// <returns>A <see cref="Measurement{T}"/> with unit information when available.</returns>
+        public async Task<Measurement<double>> ReadNodeWithUnitAsync(
+            string nodeId,
+            string source = "opcua",
+            CancellationToken ct = default)
+        {
+            var id = NodeId.Parse(nodeId);
+
+            DataValue dataValue = await _session.ReadValueAsync(id, ct).ConfigureAwait(false);
+            Measurement<double> measurement = dataValue.ToMeasurement(source);
+
+            EUInformation eu = await ReadEngineeringUnitAsync(id, ct).ConfigureAwait(false);
+            if (eu == null) return measurement;
+
+            Enum typedUnit = OpcUaUnitMapper.TryGetUnit(eu.DisplayName?.Text)
+                             ?? OpcUaUnitMapper.TryGetUnit(eu.Description?.Text);
+
+            Metadata metadata = measurement.Metadata.With("eu", eu.DisplayName?.Text ?? eu.Description?.Text ?? "unknown");
+            measurement = typedUnit != null
+                ? measurement.WithUnit(typedUnit).WithMetadata(metadata)
+                : measurement.WithMetadata(metadata);
+
+            return measurement;
+        }
+
+        private async Task<EUInformation> ReadEngineeringUnitAsync(NodeId id, CancellationToken ct)
+        {
+            try
+            {
+                var browser = new Browser(_session)
+                {
+                    BrowseDirection = BrowseDirection.Forward,
+                    ReferenceTypeId = ReferenceTypeIds.HasProperty,
+                    NodeClassMask = (int)NodeClass.Variable,
+                    IncludeSubtypes = true,
+                };
+
+                ReferenceDescriptionCollection references = await browser.BrowseAsync(id, ct).ConfigureAwait(false);
+                ReferenceDescription euRef = references.FirstOrDefault(r => r.BrowseName?.Name == "EngineeringUnit");
+                if (euRef == null) return null;
+
+                var propertyId = ExpandedNodeId.ToNodeId(euRef.NodeId, _session.NamespaceUris);
+                DataValue propertyValue = await _session.ReadValueAsync(propertyId, ct).ConfigureAwait(false);
+
+                if (!(propertyValue.WrappedValue.Value is ExtensionObject ext)) return null;
+
+                object body = ext.Body;
+                if (body is EUInformation direct) return direct;
+
+#pragma warning disable CS0618
+                return ExtensionObject.ToEncodeable(ext) as EUInformation;
+#pragma warning restore CS0618
+            }
+            catch (ServiceResultException)
+            {
+                return null;
+            }
         }
 
         /// <summary>Reads multiple OPC UA nodes and returns them as measurements.</summary>
@@ -164,6 +367,10 @@ namespace SignalFlux.Protocols.OpcUa
 
             return response.Results.Select(dv => dv.ToMeasurement(source)).ToList();
         }
+
+        // ------------------------------------------------------------------
+        // Subscribe
+        // ------------------------------------------------------------------
 
         /// <summary>Subscribes to live data changes on a node. The handler is invoked on each notification.</summary>
         /// <param name="nodeId">The node identifier to subscribe to.</param>
@@ -216,6 +423,10 @@ namespace SignalFlux.Protocols.OpcUa
             return new SubscriptionHandle(subscription, _subscriptions);
         }
 
+        // ------------------------------------------------------------------
+        // Browse
+        // ------------------------------------------------------------------
+
         /// <summary>Browses the OPC UA address space starting from a given node.</summary>
         /// <param name="startNodeId">The starting node ID (default: root folder).</param>
         /// <param name="ct">Cancellation token.</param>
@@ -244,12 +455,81 @@ namespace SignalFlux.Protocols.OpcUa
                 r.NodeClass)).ToList();
         }
 
-        /// <summary>Disposes the adapter and closes the OPC UA session.</summary>
+        // ------------------------------------------------------------------
+        // Reconnection
+        // ------------------------------------------------------------------
+
+        private void OnSessionKeepAlive(ISession sender, KeepAliveEventArgs e)
+        {
+            if (_disposed) return;
+            if (e.Status == null || ServiceResult.IsGood(e.Status)) return;
+
+            SetState(OpcUaConnectionState.Reconnecting);
+
+            lock (_stateLock)
+            {
+                if (_reconnectHandler != null) return;
+                _reconnectHandler = new SessionReconnectHandler(null);
+            }
+
+            _reconnectHandler.BeginReconnect(sender, _options.ReconnectPeriodMs, OnReconnectComplete);
+        }
+
+        private void OnReconnectComplete(object sender, EventArgs e)
+        {
+            var handler = sender as SessionReconnectHandler;
+            if (handler == null || _disposed) return;
+
+            // Per OPC UA stack contract: only adopt the session when the handler actually produced one.
+            ISession newSession = handler.Session;
+            if (newSession == null) return;
+
+            ISession oldSession;
+            lock (_stateLock)
+            {
+                oldSession = _session;
+                _session = newSession;
+                oldSession?.KeepAlive -= OnSessionKeepAlive;
+                newSession.KeepAlive += OnSessionKeepAlive;
+                _reconnectHandler = null;
+                SetState(OpcUaConnectionState.Connected);
+            }
+
+            oldSession?.Dispose();
+            handler.Dispose();
+        }
+
+        private void SetState(OpcUaConnectionState newState)
+        {
+            OpcUaConnectionStateChangedEventArgs args;
+            lock (_stateLock)
+            {
+                if (_state == newState) return;
+                var previous = _state;
+                _state = newState;
+                args = new OpcUaConnectionStateChangedEventArgs(previous, newState);
+            }
+
+            OnStateChanged?.Invoke(this, args);
+        }
+
+        // ------------------------------------------------------------------
+        // Disposal
+        // ------------------------------------------------------------------
+
+        /// <summary>Disposes the adapter, deletes subscriptions, closes the session, and stops reconnection handling.</summary>
         public async ValueTask DisposeAsync()
         {
             if (!_disposed)
             {
                 _disposed = true;
+
+                SessionReconnectHandler reconnectHandler;
+                lock (_stateLock)
+                {
+                    reconnectHandler = _reconnectHandler;
+                    _reconnectHandler = null;
+                }
 
                 Subscription[] snapshot;
                 lock (_subscriptions)
@@ -263,8 +543,17 @@ namespace SignalFlux.Protocols.OpcUa
                     await sub.DeleteAsync(silent: true).ConfigureAwait(false);
                 }
 
+                _session.KeepAlive -= OnSessionKeepAlive;
+
+                if (reconnectHandler != null)
+                {
+                    reconnectHandler.Dispose();
+                }
+
                 await _session.CloseAsync().ConfigureAwait(false);
                 _session.Dispose();
+
+                SetState(OpcUaConnectionState.Disconnected);
             }
         }
 

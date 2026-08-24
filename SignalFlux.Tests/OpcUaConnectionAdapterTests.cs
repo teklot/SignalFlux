@@ -27,6 +27,12 @@ namespace SignalFlux.Tests
         }
 
         [Fact]
+        public void State_InitialValue_IsDisconnected()
+        {
+            Assert.Equal(OpcUaConnectionState.Disconnected, default(OpcUaConnectionState));
+        }
+
+        [Fact]
         public async Task ConnectAsync_NullUrl_Throws()
         {
             var ct = TestContext.Current.CancellationToken;

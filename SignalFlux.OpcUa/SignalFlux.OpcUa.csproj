@@ -8,13 +8,13 @@
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <Title>SignalFlux.OpcUa</Title>
     <Authors>TekLot,$(AssemblyName)</Authors>
-    <Description>OPC UA client adapter for SignalFlux — connect, read, subscribe, and browse OPC UA servers with Signal&lt;T&gt; and Measurement&lt;T&gt; types.</Description>
     <Copyright>Copyright © 2026 TekLot</Copyright>
+    <Description>OPC UA client adapter for SignalFlux — connect, read, write, subscribe, and browse OPC UA servers with Signal&lt;T&gt; and Measurement&lt;T&gt; types.</Description>
     <PackageId>SignalFlux.OpcUa</PackageId>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageTags>SignalFlux;Protocols;OPC;OPCUA;Industrial;SCADA;Engineering;dotnet-library</PackageTags>
-    <PackageReleaseNotes>OPC UA client adapter with anonymous connection, node read, subscription, and address space browsing.</PackageReleaseNotes>
+    <PackageReleaseNotes>Adds write support (WriteNodeAsync, WriteNodesAsync), username/password authentication with automatic application certificate creation, automatic reconnection with State property and OnStateChanged events, and engineering-unit resolution to typed UnitsNet units via ReadNodeWithUnitAsync.</PackageReleaseNotes>
     <PackageProjectUrl>https://github.com/teklot/signalflux</PackageProjectUrl>
     <RepositoryUrl>https://github.com/teklot/signalflux.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>

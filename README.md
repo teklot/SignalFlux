@@ -215,7 +215,7 @@ Every `Measurement` has a `Timestamp` and `Source`. Every `Experiment` captures 
 | **SignalFlux.IO** | Unified stream connection abstraction: TCP, UDP, Serial, Named Pipes with async, cancellation, timeouts |
 | **SignalFlux.Storage** | CSV streaming read/write, SQLite & Parquet backends, `ISignalStore`/`IExperimentStore` interfaces, `SignalReplayer` |
 | **SignalFlux.Protocols** | Protocol adapters for Modbus, MAVLink, and NMEA 0183 — bridge `Signal<T>` and `Measurement<T>` with real-world protocol data |
-| **SignalFlux.OpcUa** | OPC UA client adapter — connect, read, subscribe, and browse OPC UA servers with `Signal<T>` and `Measurement<T>` types |
+| **SignalFlux.OpcUa** | OPC UA client adapter — connect (anonymous / username+password), read, write, subscribe, browse; automatic reconnection with `OnStateChanged` events; engineering-unit resolution into typed `UnitsNet` units |
 
 ## Installation
 
@@ -419,6 +419,9 @@ An enum describing data confidence: `Unknown`, `Good`, `Fair`, `Poor`, `Bad`, `I
 - **SignalFlux.Protocols:** Protocol adapters for Modbus (`ModbusSignalExtensions`, `ModbusConnectionAdapter`), MAVLink v2 (`MavlinkSignalExtensions`, `MavlinkConnectionAdapter`), and NMEA 0183 (`NmeaSentenceExtensions`, `NmeaConnectionAdapter`) — scale/offset/clamping, Signal/Measurement conversion, runtime dialect loading
 
 ### Phase 4 — Industry Integrations (in progress)
-- **SignalFlux.OpcUa:** OPC UA client adapter — connect, read, subscribe, browse ✓
-  - Later: write support, security (certs + user auth), reconnection handling
+- **SignalFlux.OpcUa:** OPC UA client adapter ✓
+  - Connect (anonymous or username/password), read, write, subscribe, browse
+  - Automatic application certificate creation; untrusted-certificate acceptance policy (`OpcUaConnectionOptions`)
+  - Automatic reconnection via keep-alive monitoring with `State` property and `OnStateChanged` events
+  - Engineering-unit resolution: node `EUInformation` → typed `UnitsNet` unit on the measurement (`ReadNodeWithUnitAsync`, `OpcUaUnitMapper`)
 - Later: CAN bus, device adapters, ML.NET / ONNX integration
