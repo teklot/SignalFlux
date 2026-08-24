@@ -2,14 +2,10 @@
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net10.0</TargetFrameworks>
-    <LangVersion>latest</LangVersion>
-    <SatelliteResourceLanguages>en-US</SatelliteResourceLanguages>
     <Nullable>disable</Nullable>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <Title>SignalFlux.Storage</Title>
-    <Authors>TekLot,$(AssemblyName)</Authors>
     <Description>SignalFlux.Storage provides CSV, SQLite, and Parquet storage backends for Signal&lt;T&gt; and Experiment, plus ISignalStore/IExperimentStore interfaces and SignalReplayer for timed replay.</Description>
-    <Copyright>Copyright © 2026 TekLot</Copyright>
     <PackageId>SignalFlux.Storage</PackageId>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
@@ -18,10 +14,6 @@
     <PackageProjectUrl>https://github.com/teklot/signalflux</PackageProjectUrl>
     <RepositoryUrl>https://github.com/teklot/signalflux.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">

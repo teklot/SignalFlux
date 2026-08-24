@@ -2,13 +2,9 @@
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.1;net10.0</TargetFrameworks>
-    <LangVersion>latest</LangVersion>
-    <SatelliteResourceLanguages>en-US</SatelliteResourceLanguages>
     <Nullable>disable</Nullable>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <Title>SignalFlux.OpcUa</Title>
-    <Authors>TekLot,$(AssemblyName)</Authors>
-    <Copyright>Copyright © 2026 TekLot</Copyright>
     <Description>OPC UA client adapter for SignalFlux — connect, read, write, subscribe, and browse OPC UA servers with Signal&lt;T&gt; and Measurement&lt;T&gt; types.</Description>
     <PackageId>SignalFlux.OpcUa</PackageId>
     <PackageReadmeFile>README.md</PackageReadmeFile>
@@ -18,10 +14,6 @@
     <PackageProjectUrl>https://github.com/teklot/signalflux</PackageProjectUrl>
     <RepositoryUrl>https://github.com/teklot/signalflux.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <ItemGroup>

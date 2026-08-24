@@ -2,29 +2,18 @@
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net10.0</TargetFrameworks>
-    <LangVersion>latest</LangVersion>
-    <SatelliteResourceLanguages>en-US</SatelliteResourceLanguages>
     <Nullable>disable</Nullable>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <Title>SignalFlux.TimeSeries</Title>
-    <Authors>TekLot,$(AssemblyName)</Authors>
     <Description>SignalFlux.TimeSeries provides time-series operations for Signal&lt;T&gt; including resampling, interpolation, alignment, windowing, statistics, and downsampling.</Description>
-    <Copyright>Copyright © 2026 TekLot</Copyright>
     <PackageId>SignalFlux.TimeSeries</PackageId>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
-    <PackageTags>
-      SignalFlux;TimeSeries;Signal;Resample;Interpolation;Filtering;
-      Statistics;Windowing;Engineering;dotnet-library
-    </PackageTags>
+    <PackageTags>SignalFlux;TimeSeries;Signal;Resample;Interpolation;Filtering;Statistics;Windowing;Engineering;dotnet-library</PackageTags>
     <PackageReleaseNotes>Provides time-series operations for Signal&lt;T&gt; including resampling, interpolation, alignment, windowing, statistics, and downsampling via extension methods.</PackageReleaseNotes>
     <PackageProjectUrl>https://github.com/teklot/signalflux</PackageProjectUrl>
     <RepositoryUrl>https://github.com/teklot/signalflux.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
