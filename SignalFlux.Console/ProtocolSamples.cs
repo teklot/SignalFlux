@@ -1,5 +1,8 @@
 using MavLinkSharp;
 using MavLinkSharp.Enums;
+using SignalFlux.Protocols.Arinc429;
+using SignalFlux.Protocols.Can;
+using SignalFlux.Protocols.Can.Dbc;
 using SignalFlux.Protocols.Mavlink;
 using SignalFlux.Protocols.Modbus;
 using SignalFlux.Protocols.Nmea;
@@ -128,6 +131,82 @@ namespace SignalFlux.Console
                 WriteLine();
             }
 
+        }
+
+        public static async Task RunCanSample()
+        {
+            WriteLine("\n=== CAN Bus Protocol Demo ===");
+            WriteLine();
+
+            // A 16-bit Motorola (big-endian) engine-speed signal with MSB at bit 7 of byte 0.
+            var frame = new CanFrame(0x100, new byte[] { 0x27, 0x10, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 }, Timestamp.UtcNow);
+            WriteLine($"Frame: {frame}");
+
+            ulong raw = frame.GetRawValue(7, 16, CanByteOrder.BigEndian);
+            double rpm = frame.ToPhysicalValue(7, 16, factor: 0.25, offset: 0.0, signed: false, byteOrder: CanByteOrder.BigEndian);
+            WriteLine($"Raw signal value: {raw} (0x{raw:X})");
+            WriteLine($"Physical (0.25 rpm/count): {rpm:F0} rpm");
+            WriteLine();
+
+            byte[] encoded = CanSignalExtensions.EncodePhysicalValue(
+                2500.0, startBit: 7, length: 16, factor: 0.25, offset: 0.0, signed: false, byteOrder: CanByteOrder.BigEndian);
+            var outbound = new CanFrame(0x100, encoded, Timestamp.UtcNow);
+            WriteLine($"Encoded 2500 rpm -> {outbound}");
+            double roundTrip = outbound.ToPhysicalValue(7, 16, 0.25, 0.0, false, CanByteOrder.BigEndian);
+            WriteLine($"Decoded back: {roundTrip:F0} rpm");
+            WriteLine();
+
+            // Parse a DBC file and decode a frame against it.
+            const string dbc = @"
+                VERSION ""1.0""
+                NS_ :
+                BS_:
+                BU_ : Engine ECU
+                BO_ 512 CombinedSpeed: 8 Engine ECU
+                SG_ WheelspeedRearLeft : 0|16@0+ (0.1,0) [0|3200] ""km/h""  ECU
+                SG_ WheelspeedFrontRight : 24|16@0+ (0.1,0) [0|3200] ""km/h""  ECU
+                CM_ BO_ 512 ""Combined wheel speed"";
+            ";
+            var database = DbcParser.Parse(dbc);
+            database.TryGetMessage(512, out DbcMessage message);
+            WriteLine($"Parsed DBC: {message}");
+
+            byte[] payload = CanSignalExtensions.EncodePhysicalValue(82.5, 0, 16, 0.1, 0.0, false, CanByteOrder.LittleEndian);
+            var dbcFrame = new CanFrame(512, payload, Timestamp.UtcNow);
+            var decoder = new DbcSignalDecoder(message);
+            foreach (var (name, value) in decoder.Decode(dbcFrame))
+                WriteLine($"  {name}: {value:F1} km/h");
+            WriteLine();
+
+            // In-memory loopback transport.
+            await using (var transport = new InMemoryCanTransport())
+            {
+                await transport.OpenAsync();
+                await transport.SendAsync(dbcFrame);
+                var received = await transport.ReadAsync();
+                WriteLine($"In-memory transport round-trip: {received}");
+            }
+        }
+
+        public static void RunArinc429Sample()
+        {
+            WriteLine("\n=== ARINC 429 Protocol Demo ===");
+            WriteLine();
+
+            // An altitude word: label 203 (octal), SDI 0, BNR data with a 0.25 ft LSB weight.
+            var word = new Arinc429Word(label: 0x83, sdi: 0, data: 48000, ssm: 0, parity: 0).WithOddParity();
+            WriteLine($"Word: {word}  (Label {word.Label:X2} / SDI {word.Sdi} / SSM {word.Ssm} / Parity {word.Parity})");
+            WriteLine($"Odd parity satisfied: {word.HasOddParity}");
+
+            double altitude = word.DecodeBnr(0.25);
+            WriteLine($"BNR altitude (LSB 0.25 ft): {altitude:F0} ft");
+            WriteLine();
+
+            var measurement = word.ToBnrMeasurement(0.25);
+            WriteLine($"As measurement: {measurement.Value:F0} ft, quality {measurement.Quality}");
+
+            var testWord = new Arinc429Word(label: 0x83, sdi: 0, data: 0x00001, ssm: 1, parity: 0);
+            WriteLine($"\nNon-normal SSM ({testWord.Ssm}) maps to quality {testWord.ToBnrMeasurement().Quality}");
         }
     }
 }

@@ -98,6 +98,8 @@ WriteLine("\n--- Protocol Adapters Demo ---");
 ProtocolSamples.RunModbusSample();
 ProtocolSamples.RunMavlinkSample();
 ProtocolSamples.RunNmeaSample();
+await ProtocolSamples.RunCanSample();
+ProtocolSamples.RunArinc429Sample();
 
 WriteLine("\n--- Visualization Adapters Demo ---");
 try

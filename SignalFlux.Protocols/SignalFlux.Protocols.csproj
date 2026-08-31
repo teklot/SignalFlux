@@ -5,19 +5,25 @@
     <Nullable>disable</Nullable>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <Title>SignalFlux.Protocols</Title>
-    <Description>SignalFlux.Protocol signalFlux provides protocol adapters for Modbus, MAVLink, and NMEA 0183, bridging Signal&lt;T&gt; and Measurement&lt;T&gt; with real-world protocol data.</Description>
+    <Description>SignalFlux.Protocol provides protocol adapters for Modbus, MAVLink, NMEA 0183, CAN bus (DBC), and ARINC 429, bridging Signal&lt;T&gt; and Measurement&lt;T&gt; with real-world protocol data.</Description>
     <PackageId>SignalFlux.Protocols</PackageId>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
-    <PackageTags>SignalFlux;Protocols;Modbus;MAVLink;NMEA0183;Industrial;Avionics;Engineering;dotnet-library</PackageTags>
-    <PackageReleaseNotes>Modbus register encoding with scale/offset/clamping, MAVLink v2 frame encode/decode with runtime dialect loading, NMEA 0183 sentence conversion (GGA, RMC, VTG, GSA, GSV, GLL) to Measurement&lt;T&gt;.</PackageReleaseNotes>
+    <PackageTags>SignalFlux;Protocols;Modbus;MAVLink;NMEA0183;CAN;DBC;ARINC429;Industrial;Avionics;Engineering;dotnet-library</PackageTags>
+    <PackageReleaseNotes>
+      - CAN bus: frame model and transport abstraction (`ICanTransport`) with in-memory/loopback transport
+      - CAN bus: Intel/Motorola bit-layout signal encode/decode to `Signal` and `Measurement`
+      - CAN bus: DBC file parser and signal decoder with multiplexing, scaling, and range-based quality
+      - CAN bus: SocketCAN, PCAN, and Kvaser platform transport stubs
+      - ARINC 429: 32-bit word encode/decode with BNR scaling and parity handling
+    </PackageReleaseNotes>
     <PackageProjectUrl>https://github.com/teklot/signalflux</PackageProjectUrl>
     <RepositoryUrl>https://github.com/teklot/signalflux.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
   </PropertyGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
-    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="9.0.5" />
+    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="10.0.11" />
     <PackageReference Include="System.Memory" Version="4.6.3" />
     <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.6.3" />
   </ItemGroup>
@@ -25,7 +31,7 @@
   <ItemGroup>
     <ProjectReference Include="..\SignalFlux\SignalFlux.csproj" />
     <PackageReference Include="NModbus" Version="3.0.83" />
-    <PackageReference Include="MavLinkSharp" Version="1.9.0" />
+    <PackageReference Include="MavLinkSharp" Version="1.11.0" />
     <PackageReference Include="SharpGIS.NmeaParser" Version="3.0.0" />
   </ItemGroup>
 
