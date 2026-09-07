@@ -9,11 +9,11 @@ namespace SignalFlux.Protocols.Can.Dbc
     public sealed class DbcSignal
     {
         /// <summary>The signal name.</summary>
-        public string Name { get; set; }
+        public string? Name { get; set; }
 
         /// <summary>Whether the signal is multiplexed and, if so, its multiplex indicator ("M" for a
         /// multiplexor, "mN" for a multiplexed member with switch value N). Null for non-multiplexed.</summary>
-        public string MultiplexerIndicator { get; set; }
+        public string? MultiplexerIndicator { get; set; }
 
         /// <summary>The DBC start bit (0-based).</summary>
         public int StartBit { get; set; }
@@ -39,8 +39,8 @@ namespace SignalFlux.Protocols.Can.Dbc
         /// <summary>The physical maximum value.</summary>
         public double Maximum { get; set; }
 
-        /// <summary>The engineering unit string.</summary>
-        public string Unit { get; set; }
+        /// <summary>The engineering unit string; null when the signal carries no unit.</summary>
+        public string? Unit { get; set; }
 
         /// <summary>Optional value-to-name mapping (e.g., 0 = "OFF", 1 = "ON").</summary>
         public System.Collections.Generic.Dictionary<ulong, string> ValueDescriptions { get; } =
@@ -58,7 +58,7 @@ namespace SignalFlux.Protocols.Can.Dbc
 
         /// <summary>The switch value under which a multiplexed signal is active (null for the multiplexor).</summary>
         public int? MultiplexerSwitchValue => IsMultiplexed
-            ? int.Parse(MultiplexerIndicator.Substring(1))
+            ? int.Parse(MultiplexerIndicator!.Substring(1))
             : (int?)null;
 
         /// <summary>Returns a readable description of the signal.</summary>

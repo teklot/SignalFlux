@@ -30,7 +30,7 @@ namespace SignalFlux.Protocols.Can
             remove => _frameReceived -= value;
         }
 
-        private EventHandler<CanFrameReceivedEventArgs> _frameReceived;
+        private EventHandler<CanFrameReceivedEventArgs>? _frameReceived;
 
         /// <inheritdoc/>
         public async Task OpenAsync(CancellationToken ct = default)

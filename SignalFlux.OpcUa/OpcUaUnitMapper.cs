@@ -15,7 +15,7 @@ namespace SignalFlux.Protocols.OpcUa
         /// </summary>
         /// <param name="displayNameOrSymbol">The EUInformation display name or symbol (e.g., "°C", "Volt", "kWh").</param>
         /// <returns>The matching UnitsNet unit enum, or null when no mapping is known.</returns>
-        public static Enum TryGetUnit(string displayNameOrSymbol)
+        public static Enum? TryGetUnit(string? displayNameOrSymbol)
         {
             if (string.IsNullOrWhiteSpace(displayNameOrSymbol)) return null;
 

@@ -14,8 +14,8 @@ namespace SignalFlux
         public double Frequency { get; }
         /// <summary>The UTC time of the first sample.</summary>
         public Timestamp StartTime { get; }
-        /// <summary>The unit of measurement (e.g., <c>ElectricPotentialUnit.Volt</c>, <c>TemperatureUnit.DegreeCelsius</c>).</summary>
-        public Enum Unit { get; }
+        /// <summary>The unit of measurement (e.g., <c>ElectricPotentialUnit.Volt</c>, <c>TemperatureUnit.DegreeCelsius</c>); null when the signal carries no unit.</summary>
+        public Enum? Unit { get; }
         /// <summary>Arbitrary tags for categorisation or filtering.</summary>
         public IReadOnlyDictionary<string, string> Tags { get; }
         /// <summary>An identifier for the data source or acquisition system.</summary>
@@ -39,10 +39,10 @@ namespace SignalFlux
             ReadOnlyMemory<T> samples,
             double frequency,
             Timestamp startTime,
-            Enum unit = null,
-            IReadOnlyDictionary<string, string> tags = null,
-            string source = null,
-            Metadata metadata = null,
+            Enum? unit = null,
+            IReadOnlyDictionary<string, string>? tags = null,
+            string? source = null,
+            Metadata? metadata = null,
             Quality quality = Quality.Good)
         {
             if (frequency <= 0)
@@ -82,7 +82,7 @@ namespace SignalFlux
             new Signal<T>(Samples, Frequency, startTime, Unit, Tags, Source, Metadata, Quality);
 
         /// <summary>Returns a copy with the unit replaced.</summary>
-        public Signal<T> WithUnit(Enum unit) =>
+        public Signal<T> WithUnit(Enum? unit) =>
             new Signal<T>(Samples, Frequency, StartTime, unit, Tags, Source, Metadata, Quality);
 
         /// <summary>Returns a copy with the metadata replaced.</summary>
@@ -117,7 +117,7 @@ namespace SignalFlux
         }
 
         /// <summary>Returns true if this signal is equal to another object.</summary>
-        public override bool Equals(object obj) =>
+        public override bool Equals(object? obj) =>
             obj is Signal<T> other && Equals(other);
 
         /// <summary>Returns a hash code for this signal.</summary>

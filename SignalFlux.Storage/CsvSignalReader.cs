@@ -23,7 +23,7 @@ namespace SignalFlux.Storage
             {
                 foreach (var value in Enum.GetValues(info.UnitType))
                 {
-                    var name = value.ToString();
+                    var name = value.ToString() ?? string.Empty;
                     if (!lookup.ContainsKey(name))
                         lookup[name] = (Enum)value;
                 }
@@ -31,7 +31,7 @@ namespace SignalFlux.Storage
             return lookup;
         }
 
-        private static Enum ParseUnit(string s)
+        private static Enum? ParseUnit(string s)
         {
             if (string.IsNullOrEmpty(s)) return null;
             if (UnitNameLookup.TryGetValue(s, out var unit))
@@ -65,13 +65,13 @@ namespace SignalFlux.Storage
         {
             var result = new List<Signal<double>>();
             var samples = new List<double>();
-            Enum unit = null;
+            Enum? unit = null;
             string source = "";
             Timestamp startTime = Timestamp.Zero;
             Timestamp lastTimestamp = Timestamp.Zero;
             bool hasData = false;
 
-            string line;
+            string? line;
             while ((line = await _reader.ReadLineAsync().ConfigureAwait(false)) != null)
             {
                 cancellationToken.ThrowIfCancellationRequested();
@@ -132,13 +132,13 @@ namespace SignalFlux.Storage
             [System.Runtime.CompilerServices.EnumeratorCancellation] CancellationToken cancellationToken = default)
         {
             var samples = new List<double>();
-            Enum unit = null;
+            Enum? unit = null;
             string source = "";
             Timestamp startTime = Timestamp.Zero;
             Timestamp lastTimestamp = Timestamp.Zero;
             bool hasData = false;
 
-            string line;
+            string? line;
             while ((line = await _reader.ReadLineAsync().ConfigureAwait(false)) != null)
             {
                 cancellationToken.ThrowIfCancellationRequested();

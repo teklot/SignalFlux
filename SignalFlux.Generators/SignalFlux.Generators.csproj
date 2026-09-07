@@ -2,7 +2,6 @@
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net10.0</TargetFrameworks>
-    <Nullable>disable</Nullable>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <Title>SignalFlux.Generators</Title>
     <Description>SignalFlux.Generators provides signal generators for simulation, test, and measurement including sine, square, noise, ramp, sawtooth, and random walk generators.</Description>
@@ -10,7 +9,7 @@
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageTags>SignalFlux;SignalGenerator;Simulation;SineWave;Noise;Engineering;Telemetry;dotnet-library</PackageTags>
-    <PackageReleaseNotes>Provides signal generators for simulation and test including sine, square, noise, ramp, sawtooth, and random walk, each with both in-memory and streaming output paths.</PackageReleaseNotes>
+    <PackageReleaseNotes>This release annotates the public API for nullable reference types.</PackageReleaseNotes>
     <PackageProjectUrl>https://github.com/teklot/signalflux</PackageProjectUrl>
     <RepositoryUrl>https://github.com/teklot/signalflux.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>

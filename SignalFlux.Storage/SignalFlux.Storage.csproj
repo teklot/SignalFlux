@@ -2,7 +2,6 @@
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net10.0</TargetFrameworks>
-    <Nullable>disable</Nullable>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <Title>SignalFlux.Storage</Title>
     <Description>SignalFlux.Storage provides CSV, SQLite, and Parquet storage backends for Signal&lt;T&gt; and Experiment, plus ISignalStore/IExperimentStore interfaces and SignalReplayer for timed replay.</Description>
@@ -10,7 +9,7 @@
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageTags>SignalFlux;Storage;CSV;SQLite;Parquet;SignalReplayer;Serialization;DataPersistence;dotnet-library</PackageTags>
-    <PackageReleaseNotes>Provides CSV streaming, SQLite (SqliteSignalStore, SqliteExperimentStore), and Parquet (ParquetSignalStore) storage backends for Signal&lt;T&gt; and Experiment, plus SignalReplayer for timed replay from any ISignalStore.</PackageReleaseNotes>
+    <PackageReleaseNotes>This release annotates the public API for nullable reference types.</PackageReleaseNotes>
     <PackageProjectUrl>https://github.com/teklot/signalflux</PackageProjectUrl>
     <RepositoryUrl>https://github.com/teklot/signalflux.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>

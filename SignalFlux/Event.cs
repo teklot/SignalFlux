@@ -28,7 +28,7 @@ namespace SignalFlux
             EventSeverity severity,
             string type,
             string description,
-            string source = null)
+            string? source = null)
         {
             Time = time;
             Severity = severity;
@@ -47,7 +47,7 @@ namespace SignalFlux
             Source == other.Source;
 
         /// <summary>Returns true if this event is equal to another object.</summary>
-        public override bool Equals(object obj) =>
+        public override bool Equals(object? obj) =>
             obj is Event other && Equals(other);
 
         /// <summary>Returns a hash code for this event.</summary>

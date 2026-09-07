@@ -38,14 +38,14 @@ namespace SignalFlux
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="id"/> is null.</exception>
         public Experiment(
             string id,
-            IReadOnlyDictionary<string, object> signals = null,
-            IReadOnlyList<Event> events = null,
-            string @operator = null,
-            IReadOnlyDictionary<string, object> configuration = null,
+            IReadOnlyDictionary<string, object>? signals = null,
+            IReadOnlyList<Event>? events = null,
+            string? @operator = null,
+            IReadOnlyDictionary<string, object>? configuration = null,
             Timestamp start = default,
             Timestamp? end = null,
-            IReadOnlyList<string> equipment = null,
-            IReadOnlyDictionary<string, string> tags = null)
+            IReadOnlyList<string>? equipment = null,
+            IReadOnlyDictionary<string, string>? tags = null)
         {
             Id = id ?? throw new ArgumentNullException(nameof(id));
             Signals = signals ?? new Dictionary<string, object>();
@@ -60,7 +60,7 @@ namespace SignalFlux
 
         /// <summary>Returns true if this experiment is equal to another by comparing IDs.</summary>
         /// <param name="other">The other experiment to compare against.</param>
-        public bool Equals(Experiment other)
+        public bool Equals(Experiment? other)
         {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
@@ -68,7 +68,7 @@ namespace SignalFlux
         }
 
         /// <summary>Returns true if this experiment is equal to another object.</summary>
-        public override bool Equals(object obj) =>
+        public override bool Equals(object? obj) =>
             ReferenceEquals(this, obj) || (obj is Experiment other && Equals(other));
 
         /// <summary>Returns a hash code for this experiment.</summary>

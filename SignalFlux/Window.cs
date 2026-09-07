@@ -40,7 +40,7 @@ namespace SignalFlux
             Start.Equals(other.Start) && Duration.Equals(other.Duration);
 
         /// <summary>Returns true if this window is equal to another object.</summary>
-        public override bool Equals(object obj) =>
+        public override bool Equals(object? obj) =>
             obj is Window other && Equals(other);
 
         /// <summary>Returns a hash code for this window.</summary>

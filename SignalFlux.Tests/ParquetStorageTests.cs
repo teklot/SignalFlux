@@ -37,7 +37,7 @@ namespace SignalFlux.Tests
                 var read = await store.ReadSignalAsync<double>("parquet-test", CT);
                 Assert.Equal(original.Count, read.Count);
                 Assert.Equal(original.Source, read.Source);
-                Assert.Equal("Volt", read.Unit.ToString());
+                Assert.Equal("Volt", read.Unit!.ToString());
                 Assert.True(Math.Abs(original.Frequency - read.Frequency) < 1.0);
             }
             finally

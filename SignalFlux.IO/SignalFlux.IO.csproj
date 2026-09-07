@@ -2,7 +2,6 @@
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net10.0</TargetFrameworks>
-    <Nullable>disable</Nullable>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <Title>SignalFlux.IO</Title>
     <Description>SignalFlux.IO provides a unified stream connection abstraction (IStreamConnection) for TCP, UDP, Serial, and Named Pipes with async, cancellation, and configurable timeouts.</Description>
@@ -10,7 +9,7 @@
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageTags>SignalFlux;IO;Serial;TCP;UDP;Pipes;Communication;dotnet-library</PackageTags>
-    <PackageReleaseNotes>Provides a unified stream connection abstraction with TCP, UDP, Serial, and Named Pipe adapters supporting async I/O, cancellation, and configurable timeouts.</PackageReleaseNotes>
+    <PackageReleaseNotes>This release annotates the public API for nullable reference types.</PackageReleaseNotes>
     <PackageProjectUrl>https://github.com/teklot/signalflux</PackageProjectUrl>
     <RepositoryUrl>https://github.com/teklot/signalflux.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>

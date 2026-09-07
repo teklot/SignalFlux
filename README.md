@@ -22,6 +22,7 @@ SignalFlux is the domain model for engineering data on .NET, **the vocabulary th
   - [Quality Is a First-Class Citizen](#quality-is-a-first-class-citizen)
   - [Composition, Not Inheritance](#composition-not-inheritance)
   - [Visualization Without Conversion Code](#visualization-without-conversion-code)
+  - [Signal Processing](#signal-processing)
 - [Technical Differentiators](#technical-differentiators)
 - [Packages](#packages)
 - [Installation](#installation)
@@ -39,7 +40,6 @@ SignalFlux is the domain model for engineering data on .NET, **the vocabulary th
   - [`Metadata`](#metadata)
   - [`Quality`](#quality)
 - [Supported Frameworks](#supported-frameworks)
-- [Roadmap](#roadmap)
 
 ## The Problem
 
@@ -211,12 +211,40 @@ plot.AddSignal(currentSignal, "Current");
 
 The pattern is the same for OxyPlot, LiveCharts, or any library that accepts x/y arrays: convert to `OADate` for time, use the UnitsNet unit for the axis label. The `Experiment` and `Event` types map to annotations and multi-series overlays the same way.
 
+### Signal Processing
+
+`SignalFlux.SignalProcessing` extends the same principle to analysis: operate on `Signal<T>` directly instead of ripping out raw arrays. Numerical algorithms are delegated to Math.NET Numerics per the guiding principle — SignalFlux standardizes the *shape* of the operation, not the math.
+
+```csharp
+using SignalFlux;
+using SignalFlux.SignalProcessing;
+using System.Numerics;
+
+// Forward FFT and a frequency axis in Hz:
+Complex[] spectrum = signal.ForwardSpectrum();
+double[]   axis     = signal.FrequencyAxis();      // Hz per bin
+
+// Magnitude, power, and one-sided PSD:
+double[] magnitude   = signal.MagnitudeSpectrum();
+double[] power       = signal.PowerSpectrum();
+double[] psd         = signal.PowerSpectralDensity();  // |F|^2 / N
+
+// Inverse FFT back to the time domain:
+Signal<double> reconstructed = spectrum.InverseSpectrum(signal.Frequency, signal.StartTime, signal.Unit);
+
+// Peak detection (threshold + minimum-distance) and a moving-max envelope:
+var peaks      = signal.FindPeaksDetailed(threshold: 0.5);
+Signal<double> envelope = signal.Envelope(windowSize: 101);
+```
+
+A console sample (`SignalProcessingSamples`) demonstrates the full round-trip: FFT spectrum of a 125 Hz tone, inverse-FFT reconstruction to ~1e-16 error, one peak per cycle, and envelope of a 2 Hz amplitude-modulated carrier.
+
 ## Technical Differentiators
 
 | vs. | SignalFlux |
 |---|---|
 | **Homemade Signal classes** | Zero-dependency core, immutable structs, `IEquatable<T>` everywhere, `UnitsNet`-typed units |
-| **Math.NET** | Math.NET is algorithmic (FFT, linear algebra). SignalFlux is a domain model. They complement each other: `MathNet.Fourier.Forward(signal.Samples.Span)` |
+| **Math.NET** | Math.NET is algorithmic (FFT, linear algebra). SignalFlux is a domain model that *wraps* Math.NET via `SignalFlux.SignalProcessing`, so `Signal<T>` gets FFT, spectrum, PSD, peaks, and envelope without raw-array glue |
 | **OPC UA / MODBUS** | Protocol-specific. SignalFlux provides the protocol-independent types those adapters should produce |
 | **Vendor SDKs** | Tied to hardware. SignalFlux normalizes data from any source into one shape |
 | **Python (NumPy/Pandas)** | No static typing, no .NET interop. SignalFlux brings the same concept to .NET with `Memory<T>`, `Span<T>`, compile-time safety |
@@ -230,6 +258,7 @@ The pattern is the same for OxyPlot, LiveCharts, or any library that accepts x/y
 | **SignalFlux.Generators** | Signal generators: sine, square, noise, ramp, sawtooth, random walk |
 | **SignalFlux.IO** | Unified stream connection abstraction: TCP, UDP, Serial, Named Pipes with async, cancellation, timeouts |
 | **SignalFlux.Storage** | CSV streaming read/write, SQLite & Parquet backends, `ISignalStore`/`IExperimentStore` interfaces, `SignalReplayer` |
+| **SignalFlux.SignalProcessing** | Signal-processing operations on `Signal<T>`: FFT / inverse FFT and spectrum analysis, peak detection, one-sided PSD, and moving-max envelope, wrapping Math.NET |
 | **SignalFlux.Protocols** | Protocol adapters for Modbus, MAVLink, NMEA 0183, CAN bus (DBC parser + decoder, Intel/Motorola signal encode-decode, in-memory transport), and ARINC 429 (32-bit word encode/decode with BNR + parity), bridging `Signal<T>` and `Measurement<T>` with real-world protocol data |
 | **SignalFlux.OpcUa** | OPC UA client adapter: connect (anonymous / username+password), read, write, subscribe, browse; automatic reconnection with `OnStateChanged` events; engineering-unit resolution into typed `UnitsNet` units |
 
@@ -241,6 +270,7 @@ dotnet add package SignalFlux.TimeSeries
 dotnet add package SignalFlux.Generators
 dotnet add package SignalFlux.IO
 dotnet add package SignalFlux.Storage
+dotnet add package SignalFlux.SignalProcessing
 dotnet add package SignalFlux.Protocols
 dotnet add package SignalFlux.OpcUa
 ```
@@ -419,30 +449,3 @@ An enum describing data confidence: `Unknown`, `Good`, `Fair`, `Poor`, `Bad`, `I
 
 - **.NET 10+**: Optimized for maximum performance and Native AOT compatibility.
 - **.NET Standard 2.0**: Broad compatibility across legacy .NET platforms.
-
-## Roadmap
-
-### Phase 1 — Foundation ✓
-- SignalFlux, TimeSeries, Generators: all delivered
-
-### Phase 2 — Data Acquisition ✓
-- **SignalFlux.IO:** Unified `IStreamConnection` abstraction with TCP, UDP, Serial, Named Pipes adapters (async, cancellation, timeouts)
-- **SignalFlux.Storage:** CSV streaming read/write, `ISignalStore`/`IExperimentStore` interfaces, SQLite (`SqliteSignalStore`, `SqliteExperimentStore`), Parquet (`ParquetSignalStore`) storage backends
-- **SignalReplayer:** Replay signals from any `ISignalStore` with original timing support, integrated with `Session.CanReplay` flag
-- **Samples:** Live acquisition pipeline demo (simulated sensor → TCP → Signal → CSV + SQLite)
-
-### Phase 3 — Ecosystem ✓
-- **SignalFlux.Protocols:** Protocol adapters for Modbus (`ModbusSignalExtensions`, `ModbusConnectionAdapter`), MAVLink v2 (`MavlinkSignalExtensions`, `MavlinkConnectionAdapter`), and NMEA 0183 (`NmeaSentenceExtensions`, `NmeaConnectionAdapter`), covering scale/offset/clamping, Signal/Measurement conversion, runtime dialect loading
-- Later expanded (Phase 4) with CAN bus (DBC) and ARINC 429 support in the same package
-
-### Phase 4 — Industry Integrations (in progress)
-- **SignalFlux.OpcUa:** OPC UA client adapter ✓
-  - Connect (anonymous or username/password), read, write, subscribe, browse
-  - Automatic application certificate creation; untrusted-certificate acceptance policy (`OpcUaConnectionOptions`)
-  - Automatic reconnection via keep-alive monitoring with `State` property and `OnStateChanged` events
-  - Engineering-unit resolution: node `EUInformation` → typed `UnitsNet` unit on the measurement (`ReadNodeWithUnitAsync`, `OpcUaUnitMapper`)
-- **SignalFlux.Protocols (CAN bus):** CAN frame model (`CanFrame`) and transport abstraction (`ICanTransport`) with in-memory loopback transport, plus Signal/Measurement encode-decode of CAN signals using Intel/Motorola bit layouts ✓
-  - DBC file parser (`DbcParser`) and decoder (`DbcSignalDecoder`) with factor/offset scaling, multiplexing, value tables, and range-based quality
-  - Native transport stubs: `SocketCanTransport` (Linux SocketCAN), `PcanTransport` (PCAN-Basic), `KvaserTransport` (CANlib) that throw clear platform/hardware-unavailable errors
-- **SignalFlux.Protocols (ARINC 429):** 32-bit word encode/decode (`Arinc429Word`) with label/SDI/data/SSM/parity fields, odd/even parity helpers, and BNR data conversion to `Measurement<T>` ✓
-- Later: device adapters, ML.NET / ONNX integration

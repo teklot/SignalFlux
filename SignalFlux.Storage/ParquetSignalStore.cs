@@ -177,7 +177,7 @@ namespace SignalFlux.Storage
 #endif
         }
 
-        private async Task<SignalMetadata> ReadMetadataFile(string source, CancellationToken ct)
+        private async Task<SignalMetadata?> ReadMetadataFile(string source, CancellationToken ct)
         {
             var metaPath = GetMetadataFilePath(source);
             if (!File.Exists(metaPath))
@@ -208,14 +208,14 @@ namespace SignalFlux.Storage
 
         private sealed class SignalMetadata
         {
-            public string UnitName { get; set; }
-            public string UnitType { get; set; }
+            public string? UnitName { get; set; }
+            public string? UnitType { get; set; }
             public Quality Quality { get; set; }
-            public Dictionary<string, string> Tags { get; set; }
-            public Dictionary<string, object> MetadataEntries { get; set; }
+            public Dictionary<string, string>? Tags { get; set; }
+            public Dictionary<string, object>? MetadataEntries { get; set; }
 
             [JsonIgnore]
-            public Enum Unit => DeserializeUnit(UnitName, UnitType);
+            public Enum? Unit => DeserializeUnit(UnitName, UnitType);
 
             [JsonIgnore]
             public Metadata Metadata
@@ -232,7 +232,7 @@ namespace SignalFlux.Storage
                 }
             }
 
-            private static Enum DeserializeUnit(string unitName, string unitType)
+            private static Enum? DeserializeUnit(string? unitName, string? unitType)
             {
                 if (unitName == null || unitType == null)
                     return null;

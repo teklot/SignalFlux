@@ -34,7 +34,8 @@ VAL_ 256 EngineRPM 0 ""Off"" 1 ""Idle"" 2 ""Cruise"" 3 ""Redline"";
             var db = DbcParser.Parse(SampleDbc);
 
             Assert.Equal(2, db.MessageCount);
-            Assert.True(db.TryGetMessage(256, out DbcMessage engine));
+            Assert.True(db.TryGetMessage(256, out DbcMessage? engine));
+            Assert.NotNull(engine);
             Assert.Equal("EngineData", engine.Name);
             Assert.Equal(8, engine.Length);
             Assert.Equal("Vehicle_PCM", engine.Transmitter);
@@ -45,9 +46,11 @@ VAL_ 256 EngineRPM 0 ""Off"" 1 ""Idle"" 2 ""Cruise"" 3 ""Redline"";
         public void Parse_ParsesSignalLayout()
         {
             var db = DbcParser.Parse(SampleDbc);
-            db.TryGetMessage(256, out DbcMessage engine);
+            Assert.True(db.TryGetMessage(256, out DbcMessage? engine));
+            Assert.NotNull(engine);
 
-            Assert.True(engine.TryGetSignal("EngineRPM", out DbcSignal rpm));
+            Assert.True(engine.TryGetSignal("EngineRPM", out DbcSignal? rpm));
+            Assert.NotNull(rpm);
             Assert.Equal(0, rpm.StartBit);
             Assert.Equal(16, rpm.Length);
             Assert.Equal(CanByteOrder.BigEndian, rpm.ByteOrder);
@@ -56,13 +59,15 @@ VAL_ 256 EngineRPM 0 ""Off"" 1 ""Idle"" 2 ""Cruise"" 3 ""Redline"";
             Assert.Equal(0.0, rpm.Offset);
             Assert.Equal("rpm", rpm.Unit);
 
-            Assert.True(engine.TryGetSignal("CoolantTemp", out DbcSignal temp));
+            Assert.True(engine.TryGetSignal("CoolantTemp", out DbcSignal? temp));
+            Assert.NotNull(temp);
             Assert.Equal(CanByteOrder.BigEndian, temp.ByteOrder);
             Assert.True(temp.IsSigned);
             Assert.Equal(1.0, temp.Factor);
             Assert.Equal(40.0, temp.Offset);
 
-            Assert.True(engine.TryGetSignal("ThrottlePos", out DbcSignal throttle));
+            Assert.True(engine.TryGetSignal("ThrottlePos", out DbcSignal? throttle));
+            Assert.NotNull(throttle);
             Assert.Equal(CanByteOrder.LittleEndian, throttle.ByteOrder);
         }
 
@@ -70,8 +75,10 @@ VAL_ 256 EngineRPM 0 ""Off"" 1 ""Idle"" 2 ""Cruise"" 3 ""Redline"";
         public void Parse_ParsesValueTable()
         {
             var db = DbcParser.Parse(SampleDbc);
-            db.TryGetMessage(256, out DbcMessage engine);
-            engine.TryGetSignal("EngineRPM", out DbcSignal rpm);
+            Assert.True(db.TryGetMessage(256, out DbcMessage? engine));
+            Assert.NotNull(engine);
+            Assert.True(engine.TryGetSignal("EngineRPM", out DbcSignal? rpm));
+            Assert.NotNull(rpm);
 
             Assert.Equal(4, rpm.ValueDescriptions.Count);
             Assert.Equal("Idle", rpm.ValueDescriptions[1]);

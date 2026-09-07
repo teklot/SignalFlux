@@ -69,7 +69,7 @@ namespace SignalFlux.Protocols.Can
             IsRemoteRequest == other.IsRemoteRequest;
 
         /// <summary>Returns true if this frame is equal to another object.</summary>
-        public override bool Equals(object obj) => obj is CanFrame other && Equals(other);
+        public override bool Equals(object? obj) => obj is CanFrame other && Equals(other);
 
         /// <summary>Returns a hash code for this frame.</summary>
         public override int GetHashCode()

@@ -168,12 +168,12 @@ namespace SignalFlux.Console
                 CM_ BO_ 512 ""Combined wheel speed"";
             ";
             var database = DbcParser.Parse(dbc);
-            database.TryGetMessage(512, out DbcMessage message);
+            database.TryGetMessage(512, out DbcMessage? message);
             WriteLine($"Parsed DBC: {message}");
 
             byte[] payload = CanSignalExtensions.EncodePhysicalValue(82.5, 0, 16, 0.1, 0.0, false, CanByteOrder.LittleEndian);
             var dbcFrame = new CanFrame(512, payload, Timestamp.UtcNow);
-            var decoder = new DbcSignalDecoder(message);
+            var decoder = new DbcSignalDecoder(message!);
             foreach (var (name, value) in decoder.Decode(dbcFrame))
                 WriteLine($"  {name}: {value:F1} km/h");
             WriteLine();

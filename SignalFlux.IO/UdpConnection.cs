@@ -10,7 +10,7 @@ namespace SignalFlux.IO
     /// <summary>UDP client connection implementing <see cref="IStreamConnection"/>.</summary>
     public sealed class UdpConnection : IStreamConnection
     {
-        private UdpClient _client;
+        private UdpClient? _client;
         private ConnectionState _state;
         private readonly int _localPort;
 
@@ -26,7 +26,7 @@ namespace SignalFlux.IO
         /// <param name="port">The remote port number.</param>
         /// <param name="localPort">Optional local port to bind to (0=ephemeral).</param>
         /// <param name="options">Optional connection configuration.</param>
-        public UdpConnection(string host, int port, int localPort = 0, ConnectionOptions options = null)
+        public UdpConnection(string host, int port, int localPort = 0, ConnectionOptions? options = null)
         {
             Options = options ?? new ConnectionOptions();
             Endpoint = new Uri($"udp://{host}:{port}");
@@ -37,7 +37,7 @@ namespace SignalFlux.IO
         /// <param name="endpoint">The remote IP endpoint.</param>
         /// <param name="localPort">Optional local port to bind to (0=ephemeral).</param>
         /// <param name="options">Optional connection configuration.</param>
-        public UdpConnection(IPEndPoint endpoint, int localPort = 0, ConnectionOptions options = null)
+        public UdpConnection(IPEndPoint endpoint, int localPort = 0, ConnectionOptions? options = null)
         {
             Options = options ?? new ConnectionOptions();
             Endpoint = new Uri($"udp://{endpoint}");
@@ -89,9 +89,9 @@ namespace SignalFlux.IO
             cts.CancelAfter(Options.ReadTimeout);
 
 #if NET10_0
-            var result = await _client.ReceiveAsync(cts.Token).ConfigureAwait(false);
+            var result = await _client!.ReceiveAsync(cts.Token).ConfigureAwait(false);
 #else
-            var result = await _client.ReceiveAsync().ConfigureAwait(false);
+            var result = await _client!.ReceiveAsync().ConfigureAwait(false);
 #endif
             var data = result.Buffer;
             int count = Math.Min(data.Length, buffer.Length);
@@ -105,7 +105,7 @@ namespace SignalFlux.IO
             ThrowIfNotConnected();
             using var cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
             cts.CancelAfter(Options.WriteTimeout);
-            await _client.SendAsync(data.ToArray(), data.Length).ConfigureAwait(false);
+            await _client!.SendAsync(data.ToArray(), data.Length).ConfigureAwait(false);
         }
 
         /// <summary>Returns a stream wrapper for the UDP socket.</summary>

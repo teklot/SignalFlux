@@ -125,7 +125,7 @@ namespace SignalFlux.TimeSeries
                 T alignedValue = frac < 0.5 ? tgtSpan[idxLow] : tgtSpan[idxHigh];
                 var time = source.StartTime + TimeSpan.FromSeconds(i / source.Frequency);
                 result[i] = new Measurement<T>(srcSpan[i], time, source.Unit)
-                    .WithMetadata(new Metadata().With("AlignedTo", alignedValue));
+                    .WithMetadata(new Metadata().With("AlignedTo", alignedValue!));
             }
 
             return new Signal<Measurement<T>>(

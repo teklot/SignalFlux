@@ -23,9 +23,9 @@ namespace SignalFlux
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="id"/> is null.</exception>
         public Session(
             string id,
-            IReadOnlyList<Experiment> experiments = null,
+            IReadOnlyList<Experiment>? experiments = null,
             bool canReplay = false,
-            IReadOnlyList<string> annotations = null)
+            IReadOnlyList<string>? annotations = null)
         {
             Id = id ?? throw new ArgumentNullException(nameof(id));
             Experiments = experiments ?? Array.Empty<Experiment>();
@@ -53,7 +53,7 @@ namespace SignalFlux
 
         /// <summary>Returns true if this session is equal to another by comparing IDs.</summary>
         /// <param name="other">The other session to compare against.</param>
-        public bool Equals(Session other)
+        public bool Equals(Session? other)
         {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
@@ -61,7 +61,7 @@ namespace SignalFlux
         }
 
         /// <summary>Returns true if this session is equal to another object.</summary>
-        public override bool Equals(object obj) =>
+        public override bool Equals(object? obj) =>
             ReferenceEquals(this, obj) || (obj is Session other && Equals(other));
 
         /// <summary>Returns a hash code for this session.</summary>

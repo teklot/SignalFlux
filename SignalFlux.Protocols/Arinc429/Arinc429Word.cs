@@ -83,7 +83,7 @@ namespace SignalFlux.Protocols.Arinc429
         public bool Equals(Arinc429Word other) => Word == other.Word;
 
         /// <inheritdoc/>
-        public override bool Equals(object obj) => obj is Arinc429Word other && Equals(other);
+        public override bool Equals(object? obj) => obj is Arinc429Word other && Equals(other);
 
         /// <inheritdoc/>
         public override int GetHashCode() => Word.GetHashCode();

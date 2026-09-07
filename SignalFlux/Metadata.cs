@@ -50,7 +50,7 @@ namespace SignalFlux
 
         /// <summary>Attempts to retrieve the value for the specified key.</summary>
         public bool TryGetValue(string key, out object value) =>
-            _data.TryGetValue(key, out value);
+            _data.TryGetValue(key, out value!);
 
         /// <summary>Returns an enumerator that iterates through the metadata entries.</summary>
         public IEnumerator<KeyValuePair<string, object>> GetEnumerator() =>

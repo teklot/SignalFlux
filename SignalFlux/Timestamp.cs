@@ -72,7 +72,7 @@ namespace SignalFlux
         public bool Equals(Timestamp other) => Ticks == other.Ticks;
 
         /// <summary>Returns true if this timestamp is equal to another object.</summary>
-        public override bool Equals(object obj) =>
+        public override bool Equals(object? obj) =>
             obj is Timestamp other && Equals(other);
 
         /// <summary>Returns a hash code for this timestamp.</summary>

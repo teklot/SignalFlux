@@ -64,7 +64,7 @@ namespace SignalFlux.Protocols.Arinc429
         /// <param name="unit">Optional engineering unit.</param>
         /// <param name="source">Optional source label stored in metadata.</param>
         public static Measurement<double> ToBnrMeasurement(
-            this Arinc429Word word, double lsbWeight = 1.0, Enum unit = null, string source = "arinc429")
+            this Arinc429Word word, double lsbWeight = 1.0, Enum? unit = null, string source = "arinc429")
         {
             double value = word.DecodeBnr(lsbWeight);
             Quality quality = word.Ssm == 0 ? Quality.Good : Quality.Bad;

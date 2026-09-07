@@ -14,7 +14,7 @@ namespace SignalFlux.Protocols.Can
     public sealed class SocketCanTransport : ICanTransport
     {
         private readonly string _interfaceName;
-        private readonly Func<string, ICanSocket> _socketFactory;
+        private readonly Func<string, ICanSocket>? _socketFactory;
 
         /// <summary>Creates a SocketCAN transport bound to a CAN interface (e.g., "can0" or "vcan0").</summary>
         /// <param name="interfaceName">The SocketCAN interface name.</param>
@@ -23,7 +23,7 @@ namespace SignalFlux.Protocols.Can
         {
         }
 
-        internal SocketCanTransport(string interfaceName, Func<string, ICanSocket> socketFactory)
+        internal SocketCanTransport(string interfaceName, Func<string, ICanSocket>? socketFactory)
         {
             if (string.IsNullOrWhiteSpace(interfaceName))
                 throw new ArgumentException("Interface name cannot be null or empty.", nameof(interfaceName));
@@ -38,7 +38,7 @@ namespace SignalFlux.Protocols.Can
             remove => _frameReceived -= value;
         }
 
-        private EventHandler<CanFrameReceivedEventArgs> _frameReceived;
+        private EventHandler<CanFrameReceivedEventArgs>? _frameReceived;
 
         /// <inheritdoc/>
         public async Task OpenAsync(CancellationToken ct = default)

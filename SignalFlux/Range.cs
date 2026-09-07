@@ -31,7 +31,7 @@ namespace SignalFlux
             Minimum.Equals(other.Minimum) && Maximum.Equals(other.Maximum);
 
         /// <summary>Returns true if this range is equal to another object.</summary>
-        public override bool Equals(object obj) =>
+        public override bool Equals(object? obj) =>
             obj is Range<T> other && Equals(other);
 
         /// <summary>Returns a hash code for this range.</summary>

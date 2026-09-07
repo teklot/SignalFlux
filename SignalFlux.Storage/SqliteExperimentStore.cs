@@ -84,10 +84,10 @@ namespace SignalFlux.Storage
             cmd.Parameters.AddWithValue("@operator", experiment.Operator ?? "");
             cmd.Parameters.AddWithValue("@start_ticks", experiment.Start.Ticks);
             cmd.Parameters.AddWithValue("@end_ticks", experiment.End?.Ticks ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@equipment_json", (object)equipmentJson ?? DBNull.Value);
-            cmd.Parameters.AddWithValue("@configuration_json", (object)configJson ?? DBNull.Value);
-            cmd.Parameters.AddWithValue("@tags_json", (object)tagsJson ?? DBNull.Value);
-            cmd.Parameters.AddWithValue("@signal_names_json", (object)signalNamesJson ?? DBNull.Value);
+            cmd.Parameters.AddWithValue("@equipment_json", (object?)equipmentJson ?? DBNull.Value);
+            cmd.Parameters.AddWithValue("@configuration_json", (object?)configJson ?? DBNull.Value);
+            cmd.Parameters.AddWithValue("@tags_json", (object?)tagsJson ?? DBNull.Value);
+            cmd.Parameters.AddWithValue("@signal_names_json", (object?)signalNamesJson ?? DBNull.Value);
 
             await cmd.ExecuteNonQueryAsync(cancellationToken).ConfigureAwait(false);
         }

@@ -186,7 +186,7 @@ namespace SignalFlux.Protocols.Can
             double offset = 0.0,
             bool signed = false,
             CanByteOrder byteOrder = CanByteOrder.LittleEndian,
-            Enum unit = null,
+            Enum? unit = null,
             float physicalMinimum = 0f,
             float physicalMaximum = 0f,
             string source = "can")

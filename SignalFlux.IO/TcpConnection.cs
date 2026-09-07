@@ -10,8 +10,8 @@ namespace SignalFlux.IO
     /// <summary>TCP client connection implementing <see cref="IStreamConnection"/>.</summary>
     public sealed class TcpConnection : IStreamConnection
     {
-        private TcpClient _client;
-        private NetworkStream _stream;
+        private TcpClient? _client;
+        private NetworkStream? _stream;
         private ConnectionState _state;
 
         /// <summary>The current state of the TCP connection.</summary>
@@ -25,7 +25,7 @@ namespace SignalFlux.IO
         /// <param name="host">The remote hostname or IP address.</param>
         /// <param name="port">The remote port number.</param>
         /// <param name="options">Optional connection configuration.</param>
-        public TcpConnection(string host, int port, ConnectionOptions options = null)
+        public TcpConnection(string host, int port, ConnectionOptions? options = null)
         {
             Options = options ?? new ConnectionOptions();
             Endpoint = new Uri($"tcp://{host}:{port}");
@@ -34,7 +34,7 @@ namespace SignalFlux.IO
         /// <summary>Creates a TCP connection to the specified endpoint.</summary>
         /// <param name="endpoint">The remote IP endpoint.</param>
         /// <param name="options">Optional connection configuration.</param>
-        public TcpConnection(IPEndPoint endpoint, ConnectionOptions options = null)
+        public TcpConnection(IPEndPoint endpoint, ConnectionOptions? options = null)
         {
             Options = options ?? new ConnectionOptions();
             Endpoint = new Uri($"tcp://{endpoint}");
@@ -91,10 +91,10 @@ namespace SignalFlux.IO
             using var cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
             cts.CancelAfter(Options.ReadTimeout);
 #if NET10_0
-            return await _stream.ReadAsync(buffer, cts.Token).ConfigureAwait(false);
+            return await _stream!.ReadAsync(buffer, cts.Token).ConfigureAwait(false);
 #else
             var arr = buffer.ToArray();
-            int count = await _stream.ReadAsync(arr, 0, arr.Length, cts.Token).ConfigureAwait(false);
+            int count = await _stream!.ReadAsync(arr, 0, arr.Length, cts.Token).ConfigureAwait(false);
             arr.AsMemory(0, count).CopyTo(buffer);
             return count;
 #endif
@@ -107,9 +107,9 @@ namespace SignalFlux.IO
             using var cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
             cts.CancelAfter(Options.WriteTimeout);
 #if NET10_0
-            await _stream.WriteAsync(data, cts.Token).ConfigureAwait(false);
+            await _stream!.WriteAsync(data, cts.Token).ConfigureAwait(false);
 #else
-            await _stream.WriteAsync(data.ToArray(), 0, data.Length, cts.Token).ConfigureAwait(false);
+            await _stream!.WriteAsync(data.ToArray(), 0, data.Length, cts.Token).ConfigureAwait(false);
 #endif
         }
 
@@ -117,7 +117,7 @@ namespace SignalFlux.IO
         public Stream GetStream()
         {
             ThrowIfNotConnected();
-            return _stream;
+            return _stream!;
         }
 
         /// <summary>Disposes the TCP connection asynchronously.</summary>

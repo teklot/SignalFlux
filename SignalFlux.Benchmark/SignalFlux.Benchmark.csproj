@@ -4,7 +4,6 @@
     <OutputType>Exe</OutputType>
     <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 
@@ -15,6 +14,7 @@
   <ItemGroup>
     <ProjectReference Include="..\SignalFlux\SignalFlux.csproj" />
     <ProjectReference Include="..\SignalFlux.TimeSeries\SignalFlux.TimeSeries.csproj" />
+    <ProjectReference Include="..\SignalFlux.SignalProcessing\SignalFlux.SignalProcessing.csproj" />
     <ProjectReference Include="..\SignalFlux.Generators\SignalFlux.Generators.csproj" />
   </ItemGroup>
 

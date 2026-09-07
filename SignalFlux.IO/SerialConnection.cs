@@ -9,7 +9,7 @@ namespace SignalFlux.IO
     /// <summary>Serial port connection implementing <see cref="IStreamConnection"/>.</summary>
     public sealed class SerialConnection : IStreamConnection
     {
-        private SerialPort _port;
+        private SerialPort? _port;
         private ConnectionState _state;
 
         /// <summary>The current state of the serial connection.</summary>
@@ -42,7 +42,7 @@ namespace SignalFlux.IO
             Parity parity = Parity.None,
             int dataBits = 8,
             StopBits stopBits = StopBits.One,
-            ConnectionOptions options = null)
+            ConnectionOptions? options = null)
         {
             PortName = portName;
             BaudRate = baudRate;
@@ -105,7 +105,7 @@ namespace SignalFlux.IO
         {
             ThrowIfNotConnected();
             var arr = new byte[buffer.Length];
-            int count = _port.Read(arr, 0, arr.Length);
+            int count = _port!.Read(arr, 0, arr.Length);
             arr.AsMemory(0, count).CopyTo(buffer);
             return Task.FromResult(count);
         }
@@ -115,7 +115,7 @@ namespace SignalFlux.IO
         {
             ThrowIfNotConnected();
             var arr = data.ToArray();
-            _port.Write(arr, 0, arr.Length);
+            _port!.Write(arr, 0, arr.Length);
             return Task.CompletedTask;
         }
 
@@ -123,7 +123,7 @@ namespace SignalFlux.IO
         public Stream GetStream()
         {
             ThrowIfNotConnected();
-            return _port.BaseStream;
+            return _port!.BaseStream;
         }
 
         /// <summary>Disposes the serial connection asynchronously.</summary>

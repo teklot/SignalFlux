@@ -12,8 +12,8 @@ namespace SignalFlux
         public T Value { get; }
         /// <summary>The UTC time at which the measurement was taken.</summary>
         public Timestamp Timestamp { get; }
-        /// <summary>The unit of measurement (e.g., <c>ElectricPotentialUnit.Volt</c>, <c>TemperatureUnit.DegreeCelsius</c>).</summary>
-        public Enum Unit { get; }
+        /// <summary>The unit of measurement (e.g., <c>ElectricPotentialUnit.Volt</c>, <c>TemperatureUnit.DegreeCelsius</c>); null when the measurement carries no unit.</summary>
+        public Enum? Unit { get; }
         /// <summary>The quality or confidence level of this measurement.</summary>
         public Quality Quality { get; }
         /// <summary>Extended metadata attached to this measurement.</summary>
@@ -28,9 +28,9 @@ namespace SignalFlux
         public Measurement(
             T value,
             Timestamp timestamp,
-            Enum unit = null,
+            Enum? unit = null,
             Quality quality = Quality.Good,
-            Metadata metadata = null)
+            Metadata? metadata = null)
         {
             Value = value;
             Timestamp = timestamp;
@@ -48,7 +48,7 @@ namespace SignalFlux
             new Measurement<T>(Value, timestamp, Unit, Quality, Metadata);
 
         /// <summary>Returns a copy with the unit replaced.</summary>
-        public Measurement<T> WithUnit(Enum unit) =>
+        public Measurement<T> WithUnit(Enum? unit) =>
             new Measurement<T>(Value, Timestamp, unit, Quality, Metadata);
 
         /// <summary>Returns a copy with the quality replaced.</summary>
@@ -68,7 +68,7 @@ namespace SignalFlux
             Quality == other.Quality;
 
         /// <summary>Returns true if this measurement is equal to another object.</summary>
-        public override bool Equals(object obj) =>
+        public override bool Equals(object? obj) =>
             obj is Measurement<T> other && Equals(other);
 
         /// <summary>Returns a hash code for this measurement.</summary>

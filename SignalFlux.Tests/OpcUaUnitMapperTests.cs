@@ -14,7 +14,7 @@ namespace SignalFlux.Tests
         [InlineData("kV", ElectricPotentialUnit.Kilovolt)]
         public void TryGetUnit_ElectricPotential_MapsCorrectly(string symbol, ElectricPotentialUnit expected)
         {
-            Enum unit = OpcUaUnitMapper.TryGetUnit(symbol);
+            Enum? unit = OpcUaUnitMapper.TryGetUnit(symbol);
             Assert.Equal(expected, unit);
         }
 
@@ -25,7 +25,7 @@ namespace SignalFlux.Tests
         [InlineData("K", TemperatureUnit.Kelvin)]
         public void TryGetUnit_Temperature_MapsCorrectly(string symbol, TemperatureUnit expected)
         {
-            Enum unit = OpcUaUnitMapper.TryGetUnit(symbol);
+            Enum? unit = OpcUaUnitMapper.TryGetUnit(symbol);
             Assert.Equal(expected, unit);
         }
 
@@ -36,7 +36,7 @@ namespace SignalFlux.Tests
         [InlineData("psi", PressureUnit.PoundForcePerSquareInch)]
         public void TryGetUnit_Pressure_MapsCorrectly(string symbol, PressureUnit expected)
         {
-            Enum unit = OpcUaUnitMapper.TryGetUnit(symbol);
+            Enum? unit = OpcUaUnitMapper.TryGetUnit(symbol);
             Assert.Equal(expected, unit);
         }
 
@@ -45,7 +45,7 @@ namespace SignalFlux.Tests
         [InlineData("mA", ElectricCurrentUnit.Milliampere)]
         public void TryGetUnit_Current_MapsCorrectly(string symbol, ElectricCurrentUnit expected)
         {
-            Enum unit = OpcUaUnitMapper.TryGetUnit(symbol);
+            Enum? unit = OpcUaUnitMapper.TryGetUnit(symbol);
             Assert.Equal(expected, unit);
         }
 
@@ -59,14 +59,14 @@ namespace SignalFlux.Tests
         [InlineData("deg", AngleUnit.Degree)]
         public void TryGetUnit_CommonUnits_MapsCorrectly(string symbol, Enum expected)
         {
-            Enum unit = OpcUaUnitMapper.TryGetUnit(symbol);
+            Enum? unit = OpcUaUnitMapper.TryGetUnit(symbol);
             Assert.Equal(expected, unit);
         }
 
         [Fact]
         public void TryGetUnit_IsCaseInsensitive()
         {
-            Enum unit = OpcUaUnitMapper.TryGetUnit("BAR");
+            Enum? unit = OpcUaUnitMapper.TryGetUnit("BAR");
             Assert.Equal(PressureUnit.Bar, unit);
 
             unit = OpcUaUnitMapper.TryGetUnit("volt");
@@ -76,7 +76,7 @@ namespace SignalFlux.Tests
         [Fact]
         public void TryGetUnit_TrimsWhitespace()
         {
-            Enum unit = OpcUaUnitMapper.TryGetUnit("  °C  ");
+            Enum? unit = OpcUaUnitMapper.TryGetUnit("  °C  ");
             Assert.Equal(TemperatureUnit.DegreeCelsius, unit);
         }
 

@@ -12,9 +12,9 @@ namespace SignalFlux
         /// <summary>The success value (only valid when <see cref="IsSuccess"/> is true).</summary>
         public T Value { get; }
         /// <summary>A description of the failure (only valid when <see cref="IsSuccess"/> is false).</summary>
-        public string Error { get; }
+        public string? Error { get; }
         /// <summary>The optional exception associated with the failure.</summary>
-        public Exception Exception { get; }
+        public Exception? Exception { get; }
 
         private Result(T value)
         {
@@ -24,10 +24,10 @@ namespace SignalFlux
             Exception = null;
         }
 
-        private Result(string error, Exception exception = null)
+        private Result(string error, Exception? exception = null)
         {
             IsSuccess = false;
-            Value = default;
+            Value = default!;
             Error = error ?? throw new ArgumentNullException(nameof(error));
             Exception = exception;
         }
@@ -36,7 +36,7 @@ namespace SignalFlux
         public static Result<T> Ok(T value) => new Result<T>(value);
 
         /// <summary>Creates a failed result with an error message and optional exception.</summary>
-        public static Result<T> Fail(string error, Exception exception = null) =>
+        public static Result<T> Fail(string error, Exception? exception = null) =>
             new Result<T>(error, exception);
 
         /// <summary>Returns the value if successful; otherwise throws <see cref="InvalidOperationException"/>.</summary>
@@ -48,7 +48,7 @@ namespace SignalFlux
         }
 
         /// <summary>Returns the value if successful; otherwise returns <paramref name="defaultValue"/>.</summary>
-        public T GetValueOrDefault(T defaultValue = default) =>
+        public T GetValueOrDefault(T defaultValue = default!) =>
             IsSuccess ? Value : defaultValue;
 
         /// <summary>Returns true if this result is equal to another by comparing success, value, and error.</summary>
@@ -59,7 +59,7 @@ namespace SignalFlux
             Error == other.Error;
 
         /// <summary>Returns true if this result is equal to another object.</summary>
-        public override bool Equals(object obj) =>
+        public override bool Equals(object? obj) =>
             obj is Result<T> other && Equals(other);
 
         /// <summary>Returns a hash code for this result.</summary>

@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0;net10.0</TargetFrameworks>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
+    <Title>SignalFlux.SignalProcessing</Title>
+    <Description>SignalFlux.SignalProcessing provides signal-processing operations for Signal&lt;T&gt; including FFT/spectrum analysis, peak detection, PSD, and envelope, wrapping Math.NET by convention.</Description>
+    <PackageId>SignalFlux.SignalProcessing</PackageId>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageTags>SignalFlux;SignalProcessing;FFT;Spectrum;PSD;PeakDetection;Envelope;Engineering;dotnet-library</PackageTags>
+    <PackageReleaseNotes>
+      - FFT / inverse FFT and spectrum analysis via Math.NET Numerics (complex bins, magnitude, power, frequency axis in Hz)
+      - Peak detection (local maxima with threshold and minimum-distance) via FindPeaks and FindPeaksDetailed
+      - One-sided power spectral density (|F|^2 / N)
+      - Moving-max envelope
+    </PackageReleaseNotes>
+    <PackageProjectUrl>https://github.com/teklot/signalflux</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/teklot/signalflux.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+  </PropertyGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+    <PackageReference Include="System.Memory" Version="4.6.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SignalFlux\SignalFlux.csproj" />
+    <PackageReference Include="MathNet.Numerics" Version="5.0.0" />
+  </ItemGroup>
+
+</Project>

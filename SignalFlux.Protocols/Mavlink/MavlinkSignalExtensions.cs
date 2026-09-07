@@ -54,7 +54,7 @@ namespace SignalFlux.Protocols.Mavlink
         /// <param name="source">Source identifier (default "mavlink").</param>
         /// <returns>A <see cref="Signal{T}"/> reconstructed from the frame field values.</returns>
         public static Signal<double> ToSignal(
-            this IReadOnlyList<Frame> frames,
+            this IReadOnlyList<Frame>? frames,
             string fieldName,
             double frequency,
             Timestamp startTime,

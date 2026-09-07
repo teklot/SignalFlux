@@ -57,7 +57,7 @@ namespace SignalFlux.Protocols.OpcUa
         public bool UseSecurity { get; set; } = false;
 
         /// <summary>Username/password credentials. Null (default) means anonymous access.</summary>
-        public OpcUaUserCredentials UserCredentials { get; set; }
+        public OpcUaUserCredentials? UserCredentials { get; set; }
 
         /// <summary>Whether to automatically accept untrusted server certificates (dev convenience; disable for production).</summary>
         public bool AutoAcceptUntrustedCertificates { get; set; } = true;

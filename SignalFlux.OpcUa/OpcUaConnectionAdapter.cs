@@ -45,7 +45,7 @@ namespace SignalFlux.Protocols.OpcUa
         private readonly List<Subscription> _subscriptions = new List<Subscription>();
         private readonly object _stateLock = new object();
         private ISession _session;
-        private SessionReconnectHandler _reconnectHandler;
+        private SessionReconnectHandler? _reconnectHandler;
         private bool _disposed;
         private OpcUaConnectionState _state = OpcUaConnectionState.Connecting;
 
@@ -67,7 +67,7 @@ namespace SignalFlux.Protocols.OpcUa
         }
 
         /// <summary>Raised whenever the connection state changes (e.g., Connected → Reconnecting after a network drop).</summary>
-        public event EventHandler<OpcUaConnectionStateChangedEventArgs> OnStateChanged;
+        public event EventHandler<OpcUaConnectionStateChangedEventArgs>? OnStateChanged;
 
         /// <summary>Connects to an OPC UA server using explicit connection options.</summary>
         /// <param name="serverUrl">The OPC UA server URL (e.g., "opc.tcp://localhost:4840").</param>
@@ -75,7 +75,7 @@ namespace SignalFlux.Protocols.OpcUa
         /// <param name="ct">Cancellation token.</param>
         /// <returns>A connected <see cref="OpcUaConnectionAdapter"/>.</returns>
         public static async Task<OpcUaConnectionAdapter> ConnectAsync(
-            string serverUrl,
+            string? serverUrl,
             OpcUaConnectionOptions options,
             CancellationToken ct = default)
         {
@@ -149,8 +149,8 @@ namespace SignalFlux.Protocols.OpcUa
                 await application.CheckApplicationInstanceCertificatesAsync(true, null, ct).ConfigureAwait(false);
             }
 
-            EndpointDescription endpointDescription = await CoreClientUtils
-                .SelectEndpointAsync(config, serverUrl, opts.UseSecurity, telemetry: null, ct)
+            EndpointDescription? endpointDescription = await CoreClientUtils
+                .SelectEndpointAsync(config, serverUrl, opts.UseSecurity, telemetry: null!, ct)
                 .ConfigureAwait(false);
 
             var endpointConfig = EndpointConfiguration.Create(config);
@@ -159,7 +159,7 @@ namespace SignalFlux.Protocols.OpcUa
             IUserIdentity identity = BuildIdentity(opts.UserCredentials);
             uint sessionTimeout = (uint)opts.SessionTimeoutMs;
 
-            var sessionFactory = new DefaultSessionFactory(telemetry: null);
+            var sessionFactory = new DefaultSessionFactory(telemetry: null!);
             ISession session = await sessionFactory.CreateAsync(
                 config,
                 configuredEndpoint,
@@ -168,7 +168,7 @@ namespace SignalFlux.Protocols.OpcUa
                 appName,
                 sessionTimeout,
                 identity,
-                (IList<string>)null,
+                (IList<string>)null!,
                 ct).ConfigureAwait(false);
 
             return new OpcUaConnectionAdapter(session, opts);
@@ -181,7 +181,7 @@ namespace SignalFlux.Protocols.OpcUa
         /// <param name="ct">Cancellation token.</param>
         /// <returns>A connected <see cref="OpcUaConnectionAdapter"/>.</returns>
         public static Task<OpcUaConnectionAdapter> ConnectAsync(
-            string serverUrl,
+            string? serverUrl,
             string applicationName = "SignalFlux",
             bool useSecurity = false,
             CancellationToken ct = default)
@@ -193,7 +193,7 @@ namespace SignalFlux.Protocols.OpcUa
             }, ct);
         }
 
-        private static IUserIdentity BuildIdentity(OpcUaUserCredentials credentials)
+        private static IUserIdentity BuildIdentity(OpcUaUserCredentials? credentials)
         {
             if (credentials == null || string.IsNullOrEmpty(credentials.UserName))
                 return new UserIdentity(new AnonymousIdentityToken());
@@ -300,10 +300,10 @@ namespace SignalFlux.Protocols.OpcUa
             DataValue dataValue = await _session.ReadValueAsync(id, ct).ConfigureAwait(false);
             Measurement<double> measurement = dataValue.ToMeasurement(source);
 
-            EUInformation eu = await ReadEngineeringUnitAsync(id, ct).ConfigureAwait(false);
+            EUInformation? eu = await ReadEngineeringUnitAsync(id, ct).ConfigureAwait(false);
             if (eu == null) return measurement;
 
-            Enum typedUnit = OpcUaUnitMapper.TryGetUnit(eu.DisplayName?.Text)
+            Enum? typedUnit = OpcUaUnitMapper.TryGetUnit(eu.DisplayName?.Text)
                              ?? OpcUaUnitMapper.TryGetUnit(eu.Description?.Text);
 
             Metadata metadata = measurement.Metadata.With("eu", eu.DisplayName?.Text ?? eu.Description?.Text ?? "unknown");
@@ -314,7 +314,7 @@ namespace SignalFlux.Protocols.OpcUa
             return measurement;
         }
 
-        private async Task<EUInformation> ReadEngineeringUnitAsync(NodeId id, CancellationToken ct)
+        private async Task<EUInformation?> ReadEngineeringUnitAsync(NodeId id, CancellationToken ct)
         {
             try
             {
@@ -327,7 +327,7 @@ namespace SignalFlux.Protocols.OpcUa
                 };
 
                 ReferenceDescriptionCollection references = await browser.BrowseAsync(id, ct).ConfigureAwait(false);
-                ReferenceDescription euRef = references.FirstOrDefault(r => r.BrowseName?.Name == "EngineeringUnit");
+                ReferenceDescription? euRef = references.FirstOrDefault(r => r.BrowseName?.Name == "EngineeringUnit");
                 if (euRef == null) return null;
 
                 var propertyId = ExpandedNodeId.ToNodeId(euRef.NodeId, _session.NamespaceUris);
@@ -432,7 +432,7 @@ namespace SignalFlux.Protocols.OpcUa
         /// <param name="ct">Cancellation token.</param>
         /// <returns>A list of child nodes.</returns>
         public async Task<IReadOnlyList<NodeInfo>> BrowseAsync(
-            string startNodeId = null,
+            string? startNodeId = null,
             CancellationToken ct = default)
         {
             NodeId rootId = startNodeId != null
@@ -469,19 +469,19 @@ namespace SignalFlux.Protocols.OpcUa
             lock (_stateLock)
             {
                 if (_reconnectHandler != null) return;
-                _reconnectHandler = new SessionReconnectHandler(null);
+                _reconnectHandler = new SessionReconnectHandler(null!);
             }
 
             _reconnectHandler.BeginReconnect(sender, _options.ReconnectPeriodMs, OnReconnectComplete);
         }
 
-        private void OnReconnectComplete(object sender, EventArgs e)
+        private void OnReconnectComplete(object? sender, EventArgs e)
         {
             var handler = sender as SessionReconnectHandler;
             if (handler == null || _disposed) return;
 
             // Per OPC UA stack contract: only adopt the session when the handler actually produced one.
-            ISession newSession = handler.Session;
+            ISession? newSession = handler.Session;
             if (newSession == null) return;
 
             ISession oldSession;
@@ -524,7 +524,7 @@ namespace SignalFlux.Protocols.OpcUa
             {
                 _disposed = true;
 
-                SessionReconnectHandler reconnectHandler;
+                SessionReconnectHandler? reconnectHandler;
                 lock (_stateLock)
                 {
                     reconnectHandler = _reconnectHandler;

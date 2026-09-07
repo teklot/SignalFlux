@@ -85,11 +85,11 @@ namespace SignalFlux.Storage
             cmd.Parameters.AddWithValue("@data_type", typeof(T).FullName);
             cmd.Parameters.AddWithValue("@frequency", signal.Frequency);
             cmd.Parameters.AddWithValue("@start_time_ticks", signal.StartTime.Ticks);
-            cmd.Parameters.AddWithValue("@unit_name", (object)unitName ?? DBNull.Value);
-            cmd.Parameters.AddWithValue("@unit_type", (object)unitType ?? DBNull.Value);
+            cmd.Parameters.AddWithValue("@unit_name", (object?)unitName ?? DBNull.Value);
+            cmd.Parameters.AddWithValue("@unit_type", (object?)unitType ?? DBNull.Value);
             cmd.Parameters.AddWithValue("@quality", (int)signal.Quality);
-            cmd.Parameters.AddWithValue("@metadata_json", (object)metadataJson ?? DBNull.Value);
-            cmd.Parameters.AddWithValue("@tags_json", (object)tagsJson ?? DBNull.Value);
+            cmd.Parameters.AddWithValue("@metadata_json", (object?)metadataJson ?? DBNull.Value);
+            cmd.Parameters.AddWithValue("@tags_json", (object?)tagsJson ?? DBNull.Value);
             cmd.Parameters.AddWithValue("@samples", Encoding.UTF8.GetBytes(samplesJson));
 
             await cmd.ExecuteNonQueryAsync(cancellationToken).ConfigureAwait(false);
@@ -128,16 +128,16 @@ namespace SignalFlux.Storage
             var samplesJson = Encoding.UTF8.GetString(blob);
 
             var samples = JsonSerializer.Deserialize<T[]>(samplesJson);
-            Enum unit = DeserializeUnit(unitName, unitType);
+            Enum? unit = DeserializeUnit(unitName, unitType);
             var metadata = new Metadata();
             if (metadataJson != null)
             {
-                var dict = JsonSerializer.Deserialize<Dictionary<string, object>>(metadataJson);
+                var dict = JsonSerializer.Deserialize<Dictionary<string, object>>(metadataJson)!;
                 foreach (var kvp in dict)
                     metadata = metadata.With(kvp.Key, kvp.Value);
             }
             IReadOnlyDictionary<string, string> tags = tagsJson != null
-                ? JsonSerializer.Deserialize<Dictionary<string, string>>(tagsJson)
+                ? JsonSerializer.Deserialize<Dictionary<string, string>>(tagsJson) ?? new Dictionary<string, string>()
                 : new Dictionary<string, string>();
 
             return new Signal<T>(
@@ -174,7 +174,7 @@ namespace SignalFlux.Storage
             await cmd.ExecuteNonQueryAsync(cancellationToken).ConfigureAwait(false);
         }
 
-        private static Enum DeserializeUnit(string unitName, string unitType)
+        private static Enum? DeserializeUnit(string? unitName, string? unitType)
         {
             if (unitName == null || unitType == null)
                 return null;

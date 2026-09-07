@@ -35,7 +35,7 @@ namespace SignalFlux.Protocols.Can.Dbc
                 if (signal.IsMultiplexed)
                     continue;
                 if (TryDecodeSignal(frame, signal, out double value))
-                    result[signal.Name] = value;
+                    result[signal.Name!] = value;
             }
             return result;
         }
@@ -70,7 +70,7 @@ namespace SignalFlux.Protocols.Can.Dbc
         /// (Bad when out of the signal's physical range), and contextual metadata including the DBC unit string.
         /// </summary>
         public Measurement<double> DecodeAsMeasurement(
-            CanFrame frame, DbcSignal signal, string source = "dbc", Enum unit = null)
+            CanFrame frame, DbcSignal signal, string source = "dbc", Enum? unit = null)
         {
             if (signal == null) throw new ArgumentNullException(nameof(signal));
             if (!TryDecodeSignal(frame, signal, out double value))
@@ -85,10 +85,10 @@ namespace SignalFlux.Protocols.Can.Dbc
             var metadata = new SignalFlux.Metadata()
                 .With("source", source)
                 .With("id", "0x" + frame.Id.ToString("X3"))
-                .With("dbc_message", Message.Name)
-                .With("dbc_signal", signal.Name);
+                .With("dbc_message", Message.Name!)
+                .With("dbc_signal", signal.Name!);
             if (!string.IsNullOrEmpty(signal.Unit))
-                metadata = metadata.With("dbc_unit", signal.Unit);
+                metadata = metadata.With("dbc_unit", signal.Unit!);
 
             return new Measurement<double>(value, frame.Timestamp, unit, quality, metadata);
         }

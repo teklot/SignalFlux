@@ -34,7 +34,7 @@ namespace SignalFlux.Protocols.Can.Dbc
         private static DbcDatabase ParseLines(string[] lines)
         {
             var database = new DbcDatabase();
-            DbcMessage currentMessage = null;
+            DbcMessage? currentMessage = null;
 
             for (int i = 0; i < lines.Length; i++)
             {
@@ -63,7 +63,7 @@ namespace SignalFlux.Protocols.Can.Dbc
                     if (currentMessage != null)
                     {
                         var signal = ParseSignal(line);
-                        if (signal != null && !currentMessage.Signals.ContainsKey(signal.Name))
+                        if (signal != null && signal.Name != null && !currentMessage.Signals.ContainsKey(signal.Name))
                             currentMessage.Signals[signal.Name] = signal;
                     }
                     continue;
@@ -85,7 +85,7 @@ namespace SignalFlux.Protocols.Can.Dbc
             return database;
         }
 
-        private static DbcMessage ParseMessage(string line)
+        private static DbcMessage? ParseMessage(string line)
         {
             // BO_ <id> <name>: <length> <transmitter>
             var tokens = SplitTopLevel(line.Substring(4).Trim());
@@ -108,7 +108,7 @@ namespace SignalFlux.Protocols.Can.Dbc
             };
         }
 
-        private static DbcSignal ParseSignal(string line)
+        private static DbcSignal? ParseSignal(string line)
         {
             // SG_ <name> <mux>: <start>|<length>@<byteorder><signed> (<factor>,<offset>) [<min>|<max>] "<unit>" <receivers>
             string body = line.Substring(4).Trim();
@@ -121,7 +121,7 @@ namespace SignalFlux.Protocols.Can.Dbc
             // Split name part into name + optional mux indicator
             var nameTokens = SplitTopLevel(namePart);
             string name = StripQuotes(nameTokens[0]);
-            string mux = nameTokens.Count > 1 ? StripQuotes(nameTokens[1]) : null;
+            string? mux = nameTokens.Count > 1 ? StripQuotes(nameTokens[1]) : null;
 
             var layoutTokens = SplitTopLevel(layoutPart);
             if (layoutTokens.Count < 3) return null;
@@ -226,10 +226,10 @@ namespace SignalFlux.Protocols.Can.Dbc
             if (tokens.Count < 3) return;
             if (!uint.TryParse(tokens[0], out uint id)) return;
             string signalName = tokens[1];
-            if (!database.TryGetMessage(id, out DbcMessage message)) return;
-            if (!message.TryGetSignal(signalName, out DbcSignal signal)) return;
+            if (!database.TryGetMessage(id, out DbcMessage? message)) return;
+            if (!message!.TryGetSignal(signalName, out DbcSignal? signal)) return;
 
-            signal.ValueDescriptions.Clear();
+            signal!.ValueDescriptions.Clear();
             for (int i = 2; i + 1 < tokens.Count; i += 2)
             {
                 if (ulong.TryParse(tokens[i], NumberStyles.Any, CultureInfo.InvariantCulture, out ulong key))
@@ -244,15 +244,15 @@ namespace SignalFlux.Protocols.Can.Dbc
             if (tokens.Count < 2) return;
 
             if (tokens[0] == "BO_" && tokens.Count >= 3 &&
-                uint.TryParse(tokens[1], out uint msgId) && database.TryGetMessage(msgId, out DbcMessage msg))
+                uint.TryParse(tokens[1], out uint msgId) && database.TryGetMessage(msgId, out DbcMessage? msg))
             {
-                msg.Comment = StripQuotes(tokens[tokens.Count - 1]);
+                msg!.Comment = StripQuotes(tokens[tokens.Count - 1]);
             }
             else if (tokens[0] == "SG_" && tokens.Count >= 4 &&
-                uint.TryParse(tokens[1], out uint sgId) && database.TryGetMessage(sgId, out DbcMessage sgMsg))
+                uint.TryParse(tokens[1], out uint sgId) && database.TryGetMessage(sgId, out DbcMessage? sgMsg))
             {
-                if (sgMsg.TryGetSignal(tokens[2], out DbcSignal sgSignal))
-                    sgSignal.Name = sgSignal.Name; // comment on signal ignored for now
+                if (sgMsg!.TryGetSignal(tokens[2], out DbcSignal? sgSignal))
+                    sgSignal!.Name = sgSignal.Name; // comment on signal ignored for now
             }
         }
 
@@ -260,7 +260,7 @@ namespace SignalFlux.Protocols.Can.Dbc
         // Tokenization helpers
         // ------------------------------------------------------------------
 
-        private static List<string> SplitTopLevel(string text, char[] splitOn = null, bool trim = true)
+        private static List<string> SplitTopLevel(string text, char[]? splitOn = null, bool trim = true)
         {
             var result = new List<string>();
             var current = new System.Text.StringBuilder();

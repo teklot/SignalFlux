@@ -9,7 +9,7 @@ namespace SignalFlux.IO
     /// <summary>Named pipe client connection implementing <see cref="IStreamConnection"/>.</summary>
     public sealed class NamedPipeConnection : IStreamConnection
     {
-        private NamedPipeClientStream _pipe;
+        private NamedPipeClientStream? _pipe;
         private ConnectionState _state;
 
         /// <summary>The current state of the pipe connection.</summary>
@@ -27,7 +27,7 @@ namespace SignalFlux.IO
         /// <param name="pipeName">The pipe name.</param>
         /// <param name="serverName">The server name ("." for local machine, default).</param>
         /// <param name="options">Optional connection configuration.</param>
-        public NamedPipeConnection(string pipeName, string serverName = ".", ConnectionOptions options = null)
+        public NamedPipeConnection(string pipeName, string serverName = ".", ConnectionOptions? options = null)
         {
             PipeName = pipeName;
             ServerName = serverName;
@@ -75,10 +75,10 @@ namespace SignalFlux.IO
         {
             ThrowIfNotConnected();
 #if NET10_0
-            return await _pipe.ReadAsync(buffer, cancellationToken).ConfigureAwait(false);
+            return await _pipe!.ReadAsync(buffer, cancellationToken).ConfigureAwait(false);
 #else
             var arr = new byte[buffer.Length];
-            int count = await _pipe.ReadAsync(arr, 0, arr.Length, cancellationToken).ConfigureAwait(false);
+            int count = await _pipe!.ReadAsync(arr, 0, arr.Length, cancellationToken).ConfigureAwait(false);
             arr.AsMemory(0, count).CopyTo(buffer);
             return count;
 #endif
@@ -89,9 +89,9 @@ namespace SignalFlux.IO
         {
             ThrowIfNotConnected();
 #if NET10_0
-            await _pipe.WriteAsync(data, cancellationToken).ConfigureAwait(false);
+            await _pipe!.WriteAsync(data, cancellationToken).ConfigureAwait(false);
 #else
-            await _pipe.WriteAsync(data.ToArray(), 0, data.Length, cancellationToken).ConfigureAwait(false);
+            await _pipe!.WriteAsync(data.ToArray(), 0, data.Length, cancellationToken).ConfigureAwait(false);
 #endif
         }
 
@@ -99,7 +99,7 @@ namespace SignalFlux.IO
         public Stream GetStream()
         {
             ThrowIfNotConnected();
-            return _pipe;
+            return _pipe!;
         }
 
         /// <summary>Disposes the pipe connection asynchronously.</summary>

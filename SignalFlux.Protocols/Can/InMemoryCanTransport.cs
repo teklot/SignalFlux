@@ -23,7 +23,7 @@ namespace SignalFlux.Protocols.Can
         }
 
         /// <inheritdoc/>
-        public event EventHandler<CanFrameReceivedEventArgs> FrameReceived;
+        public event EventHandler<CanFrameReceivedEventArgs>? FrameReceived;
 
         /// <inheritdoc/>
         public Task OpenAsync(CancellationToken ct = default)

@@ -9,16 +9,16 @@ namespace SignalFlux.Protocols.Can.Dbc
         public uint Id { get; set; }
 
         /// <summary>The message name.</summary>
-        public string Name { get; set; }
+        public string? Name { get; set; }
 
         /// <summary>The message length in bytes (DLC).</summary>
         public int Length { get; set; }
 
-        /// <summary>The transmitter name.</summary>
-        public string Transmitter { get; set; }
+        /// <summary>The transmitter name; null when absent.</summary>
+        public string? Transmitter { get; set; }
 
         /// <summary>Comment text attached to the message (null if none).</summary>
-        public string Comment { get; set; }
+        public string? Comment { get; set; }
 
         /// <summary>The signals belonging to this message, keyed by name.</summary>
         public Dictionary<string, DbcSignal> Signals { get; } = new Dictionary<string, DbcSignal>();
@@ -27,10 +27,10 @@ namespace SignalFlux.Protocols.Can.Dbc
         public bool ContainsSignal(string name) => Signals.ContainsKey(name);
 
         /// <summary>Attempts to get the signal with the given name.</summary>
-        public bool TryGetSignal(string name, out DbcSignal signal) => Signals.TryGetValue(name, out signal);
+        public bool TryGetSignal(string name, out DbcSignal? signal) => Signals.TryGetValue(name, out signal);
 
         /// <summary>Gets the multiplexor signal, or null if the message has no multiplexing.</summary>
-        public DbcSignal Multiplexor
+        public DbcSignal? Multiplexor
         {
             get
             {
