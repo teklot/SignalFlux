@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-
 namespace SignalFlux.Console
 {
     /// <summary>
@@ -11,7 +8,7 @@ namespace SignalFlux.Console
         /// <summary>The canonical demo names in default run order.</summary>
         public static readonly IReadOnlyList<string> AllDemos = new[]
         {
-            "core", "csv", "acquisition", "signalprocessing", "protocols", "visualization", "opcua"
+            "core", "csv", "acquisition", "signalprocessing", "protocols", "visualization", "opcua", "space"
         };
 
         /// <summary>Selected demo names when running non-interactively.</summary>
@@ -87,6 +84,7 @@ namespace SignalFlux.Console
             System.Console.WriteLine("  signalprocessing   FFT / spectrum / peaks / PSD / envelope");
             System.Console.WriteLine("  protocols          Modbus, MAVLink, NMEA, CAN (DBC), ARINC 429");
             System.Console.WriteLine("  visualization      ScottPlot render");
+            System.Console.WriteLine("  space              CCSDS Space Packets, CUC/CDS time, PUS housekeeping");
             System.Console.WriteLine("  opcua              OPC UA client demo");
             System.Console.WriteLine();
             System.Console.WriteLine("Options:");

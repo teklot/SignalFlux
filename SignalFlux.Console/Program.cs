@@ -1,5 +1,3 @@
-using System;
-using SignalFlux;
 using SignalFlux.Generators;
 using SignalFlux.TimeSeries;
 using static System.Console;
@@ -60,6 +58,7 @@ namespace SignalFlux.Console
                 WriteLine("  6. Protocol adapters");
                 WriteLine("  7. Visualization (ScottPlot)");
                 WriteLine("  8. OPC UA client");
+                WriteLine("  9. Space telemetry");
                 WriteLine("  0. Exit");
                 WriteLine();
                 Write("Choose an option: ");
@@ -76,7 +75,7 @@ namespace SignalFlux.Console
                 if (choice == 0)
                     return;
 
-                if (choice is >= 1 and <= 8)
+                if (choice is >= 1 and <= 9)
                 {
                     await RunMenuChoice(choice);
                     WriteLine();
@@ -104,6 +103,7 @@ namespace SignalFlux.Console
                 case 6: await RunDemos(new[] { "protocols" }); break;
                 case 7: await RunDemos(new[] { "visualization" }); break;
                 case 8: await RunDemos(new[] { "opcua" }); break;
+                case 9: await RunDemos(new[] { "space" }); break;
             }
         }
 
@@ -177,6 +177,16 @@ namespace SignalFlux.Console
                         break;
                     case "opcua":
                         await RunOpcUaDemo();
+                        break;
+                    case "space":
+                        try
+                        {
+                            SpaceTelemetrySamples.RunSpaceTelemetrySample();
+                        }
+                        catch (Exception ex)
+                        {
+                            WriteLine($"Space telemetry demo skipped: {ex.Message}");
+                        }
                         break;
                     default:
                         WriteLine($"Unknown demo '{name}'. Run with --help for the list.");

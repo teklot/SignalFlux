@@ -261,6 +261,7 @@ A console sample (`SignalProcessingSamples`) demonstrates the full round-trip: F
 | **SignalFlux.SignalProcessing** | Signal-processing operations on `Signal<T>`: FFT / inverse FFT and spectrum analysis, peak detection, one-sided PSD, and moving-max envelope, wrapping Math.NET |
 | **SignalFlux.Protocols** | Protocol adapters for Modbus, MAVLink, NMEA 0183, CAN bus (DBC parser + decoder, Intel/Motorola signal encode-decode, in-memory transport), and ARINC 429 (32-bit word encode/decode with BNR + parity), bridging `Signal<T>` and `Measurement<T>` with real-world protocol data |
 | **SignalFlux.OpcUa** | OPC UA client adapter: connect (anonymous / username+password), read, write, subscribe, browse; automatic reconnection with `OnStateChanged` events; engineering-unit resolution into typed `UnitsNet` units |
+| **SignalFlux.Space** | CCSDS Space Packet framing (decode/encode), CCSDS time codes (CUC/CDS → `Timestamp`), ECSS PUS TM secondary header + CRC-16, and PUS Service 3 housekeeping (TM[3,25]/[3,26]) → `Measurement<T>` |
 
 ## Installation
 
@@ -273,6 +274,7 @@ dotnet add package SignalFlux.Storage
 dotnet add package SignalFlux.SignalProcessing
 dotnet add package SignalFlux.Protocols
 dotnet add package SignalFlux.OpcUa
+dotnet add package SignalFlux.Space
 ```
 
 > UnitsNet is automatically included as a dependency of SignalFlux. Add `using UnitsNet.Units;` to access typed unit enums like `ElectricPotentialUnit.Volt`, `TemperatureUnit.DegreeCelsius`, etc.

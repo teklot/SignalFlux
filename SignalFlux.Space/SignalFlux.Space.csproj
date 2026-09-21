@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0;net10.0</TargetFrameworks>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
+    <Title>SignalFlux.Space</Title>
+    <Description>SignalFlux.Space provides space telemetry support for CCSDS Space Packets, CCSDS time codes (CUC/CDS), and ECSS Packet Utilization Standard (PUS) TM packetization with Service 3 housekeeping bridged to Measurement&lt;T&gt;.</Description>
+    <PackageId>SignalFlux.Space</PackageId>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageTags>SignalFlux;Space;CCSDS;PUS;ECSS;Telemetry;Satellite;Engineering;dotnet-library</PackageTags>
+    <PackageReleaseNotes>
+      - CCSDS Space Packet primary-header framing (decode and encode, TM focus)
+      - CCSDS time codes: CUC (unsegmented) and CDS (day-segmented) to SignalFlux.Timestamp
+      - ECSS PUS TM secondary header with configurable CUC time field
+      - PUS CRC-16 (CCITT, polynomial 0x1021)
+      - PUS Service 3 housekeeping (TM[3,25] / TM[3,26] SID-qualified) to Measurement&lt;T&gt; with UnitsNet units and quality assessment
+    </PackageReleaseNotes>
+    <PackageProjectUrl>https://github.com/teklot/signalflux</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/teklot/signalflux.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+  </PropertyGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+    <PackageReference Include="System.Memory" Version="4.6.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SignalFlux\SignalFlux.csproj" />
+  </ItemGroup>
+
+</Project>

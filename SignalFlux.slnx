@@ -7,6 +7,7 @@
   <Project Path="SignalFlux/SignalFlux.csproj" />
   <Project Path="SignalFlux.TimeSeries/SignalFlux.TimeSeries.csproj" />
   <Project Path="SignalFlux.SignalProcessing/SignalFlux.SignalProcessing.csproj" />
+  <Project Path="SignalFlux.Space/SignalFlux.Space.csproj" />
   <Project Path="SignalFlux.Generators/SignalFlux.Generators.csproj" />
   <Project Path="SignalFlux.Tests/SignalFlux.Tests.csproj" />
   <Project Path="SignalFlux.Benchmark/SignalFlux.Benchmark.csproj" />

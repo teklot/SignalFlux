@@ -3,7 +3,7 @@
     <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
     <SatelliteResourceLanguages>en-US</SatelliteResourceLanguages>
-    <Version>0.8.0</Version>
+    <Version>0.9.0</Version>
     <Authors>TekLot</Authors>
     <Copyright>Copyright © 2026 TekLot</Copyright>
   </PropertyGroup>
