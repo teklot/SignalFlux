@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using SignalFlux;
-using SignalFlux.Space.Ccsds;
 using SignalFlux.Space.Pus;
 using UnitsNet.Units;
 using static System.Console;
@@ -17,7 +13,7 @@ namespace SignalFlux.Console
     {
         public static void RunSpaceTelemetrySample()
         {
-            WriteLine("=== Space Telemetry Demo (CCSDS / ECSS PUS, v0.9) ===");
+            WriteLine("\n=== Space Telemetry Demo (CCSDS / ECSS PUS, v0.9) ===\n");
 
             var epoch = Timestamp.FromUnixSeconds(0);
             var packetTime = Timestamp.UtcNow;

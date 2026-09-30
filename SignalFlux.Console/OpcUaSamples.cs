@@ -9,8 +9,7 @@ namespace SignalFlux.Console
 
         public static async Task RunSampleAsync()
         {
-            WriteLine("\n=== OPC UA Protocol Demo ===");
-            WriteLine();
+            WriteLine("\n=== OPC UA Protocol Demo ===\n");
 
             OpcUaConnectionAdapter? adapter = null;
             try

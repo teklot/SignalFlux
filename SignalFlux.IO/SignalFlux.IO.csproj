@@ -9,24 +9,27 @@
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageTags>SignalFlux;IO;Serial;TCP;UDP;Pipes;Communication;dotnet-library</PackageTags>
-    <PackageReleaseNotes>This release annotates the public API for nullable reference types.</PackageReleaseNotes>
+    <PackageReleaseNotes>
+      - This release annotates the public API for nullable reference types.
+      - Upgrade packages System.IO.Ports and Microsoft.Bcl.AsyncInterfaces.
+    </PackageReleaseNotes>
     <PackageProjectUrl>https://github.com/teklot/signalflux</PackageProjectUrl>
     <RepositoryUrl>https://github.com/teklot/signalflux.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
   </PropertyGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
-    <PackageReference Include="System.IO.Ports" Version="10.0.11" />
+    <PackageReference Include="System.IO.Ports" Version="10.0.12" />
     <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.6.3" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net10.0'">
-    <PackageReference Include="System.IO.Ports" Version="10.0.11" />
+    <PackageReference Include="System.IO.Ports" Version="10.0.12" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\SignalFlux\SignalFlux.csproj" />
-    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="10.0.11" />
+    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="10.0.12" />
   </ItemGroup>
 
 </Project>

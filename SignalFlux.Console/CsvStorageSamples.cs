@@ -1,7 +1,3 @@
-using System;
-using System.IO;
-using System.Threading.Tasks;
-using SignalFlux;
 using SignalFlux.Storage;
 using static System.Console;
 
@@ -11,8 +7,7 @@ namespace SignalFlux.Console
     {
         public static async Task RunRoundTripAsync(Signal<double> signal, Experiment experiment)
         {
-            WriteLine("\n=== CSV Storage Demo ===");
-            WriteLine();
+            WriteLine("\n=== CSV Storage Demo ===\n");
 
             var csvPath = Path.GetTempFileName() + ".csv";
 

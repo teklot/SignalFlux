@@ -1,12 +1,8 @@
-using System;
-using System.IO;
+using SignalFlux.Generators;
+using SignalFlux.Storage;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
-using System.Threading.Tasks;
-using SignalFlux.Generators;
-using SignalFlux.IO;
-using SignalFlux.Storage;
 using UnitsNet.Units;
 using static System.Console;
 
@@ -16,8 +12,7 @@ namespace SignalFlux.Console
     {
         public static async Task RunAsync()
         {
-            WriteLine("=== SignalFlux Live Acquisition Demo ===");
-            WriteLine();
+            WriteLine("\n=== SignalFlux Live Acquisition Demo ===\n");
 
             var tempDir = Path.Combine(Path.GetTempPath(), "SignalFluxAcquisitionDemo");
             Directory.CreateDirectory(tempDir);

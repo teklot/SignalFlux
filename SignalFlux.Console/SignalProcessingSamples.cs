@@ -9,8 +9,7 @@ namespace SignalFlux.Console
     {
         public static void RunSignalProcessingSample()
         {
-            WriteLine("=== Signal Processing Demo ===");
-            WriteLine();
+            WriteLine("\n=== Signal Processing Demo ===\n");
 
             // 125 Hz tone sampled at 1 kHz for 1024 samples -> an exact FFT bin at 125.0 Hz.
             const int sampleCount = 1024;
@@ -72,7 +71,6 @@ namespace SignalFlux.Console
 
             WriteLine($"Envelope (2 Hz AM on 100 Hz carrier, window 101): min {envMin:F2} V, max {envMax:F2} V");
             WriteLine($"  Expected: amplitude modulation spans (1 ± 0.8) V");
-            WriteLine();
         }
 
         private static int DominantBin(System.Numerics.Complex[] spectrum)

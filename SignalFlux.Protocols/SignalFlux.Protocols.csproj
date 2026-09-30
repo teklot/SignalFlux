@@ -8,23 +8,27 @@
     <PackageId>SignalFlux.Protocols</PackageId>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
-    <PackageTags>SignalFlux;Protocols;Modbus;MAVLink;NMEA0183;CAN;DBC;ARINC429;Industrial;Avionics;Engineering;dotnet-library</PackageTags>
-    <PackageReleaseNotes>This release annotates the public API for nullable reference types.</PackageReleaseNotes>
+    <PackageTags>SignalFlux;Protocols;Modbus;MAVLink;NMEA0183;CAN;DBC;ARINC429;SCPI;Industrial;Avionics;Engineering;dotnet-library</PackageTags>
+    <PackageReleaseNotes>
+      - Adds SCPI protocol codec: ScpiClient, ScpiBlockParser (IEEE-488.2 definite/indefinite blocks), InMemoryScpiConnection, and waveform block extensions.
+      - Upgrade packages Microsoft.Bcl.AsyncInterfaces and MavLinkSharp.
+    </PackageReleaseNotes>
     <PackageProjectUrl>https://github.com/teklot/signalflux</PackageProjectUrl>
     <RepositoryUrl>https://github.com/teklot/signalflux.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
   </PropertyGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
-    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="10.0.11" />
+    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="10.0.12" />
     <PackageReference Include="System.Memory" Version="4.6.3" />
     <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.6.3" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\SignalFlux\SignalFlux.csproj" />
+    <ProjectReference Include="..\SignalFlux.IO\SignalFlux.IO.csproj" />
     <PackageReference Include="NModbus" Version="3.0.83" />
-    <PackageReference Include="MavLinkSharp" Version="1.11.0" />
+    <PackageReference Include="MavLinkSharp" Version="1.13.0" />
     <PackageReference Include="SharpGIS.NmeaParser" Version="3.0.0" />
   </ItemGroup>
 

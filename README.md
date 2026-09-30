@@ -11,7 +11,7 @@ SignalFlux is the domain model for engineering data on .NET, **the vocabulary th
 
 **Guiding principle:** Never replace mature libraries. Standardize how they work together.
 
-## Contents
+## Table of Contents
 
 - [The Problem](#the-problem)
 - [Use Cases](#use-cases)
@@ -40,6 +40,27 @@ SignalFlux is the domain model for engineering data on .NET, **the vocabulary th
   - [`Metadata`](#metadata)
   - [`Quality`](#quality)
 - [Supported Frameworks](#supported-frameworks)
+
+## Protocol Codecs (SCPI)
+
+`SignalFlux.Protocols` ships a standalone SCPI codec for talking to test
+instruments (oscilloscopes, DAQs, power supplies) over any byte stream.
+
+```csharp
+using SignalFlux.Protocols.Scpi;
+
+var connection = new InMemoryScpiConnection();
+var client = new ScpiClient(connection);
+
+connection.Relay("<waveform block bytes>");
+ScpiBlock block = client.ReadBlock();       // IEEE-488.2 definite (#<n>) / indefinite (#0)
+double[] samples = block.ToDoubles();       // waveform block -> samples
+```
+
+The codec is byte-level and transport-agnostic: `ScpiClient` issues queries,
+`ScpiBlockParser` decodes IEEE-488.2 block frames, and `ScpiSignalExtensions`
+converts waveform blocks to `Signal<T>`. Per the standalone-libs rule, device
+models live in HelixForge — protocol codecs stay in SignalFlux.
 
 ## The Problem
 
@@ -222,7 +243,7 @@ using System.Numerics;
 
 // Forward FFT and a frequency axis in Hz:
 Complex[] spectrum = signal.ForwardSpectrum();
-double[]   axis     = signal.FrequencyAxis();      // Hz per bin
+double[]  axis     = signal.FrequencyAxis();      // Hz per bin
 
 // Magnitude, power, and one-sided PSD:
 double[] magnitude   = signal.MagnitudeSpectrum();
@@ -233,7 +254,7 @@ double[] psd         = signal.PowerSpectralDensity();  // |F|^2 / N
 Signal<double> reconstructed = spectrum.InverseSpectrum(signal.Frequency, signal.StartTime, signal.Unit);
 
 // Peak detection (threshold + minimum-distance) and a moving-max envelope:
-var peaks      = signal.FindPeaksDetailed(threshold: 0.5);
+var peaks = signal.FindPeaksDetailed(threshold: 0.5);
 Signal<double> envelope = signal.Envelope(windowSize: 101);
 ```
 
@@ -259,7 +280,7 @@ A console sample (`SignalProcessingSamples`) demonstrates the full round-trip: F
 | **SignalFlux.IO** | Unified stream connection abstraction: TCP, UDP, Serial, Named Pipes with async, cancellation, timeouts |
 | **SignalFlux.Storage** | CSV streaming read/write, SQLite & Parquet backends, `ISignalStore`/`IExperimentStore` interfaces, `SignalReplayer` |
 | **SignalFlux.SignalProcessing** | Signal-processing operations on `Signal<T>`: FFT / inverse FFT and spectrum analysis, peak detection, one-sided PSD, and moving-max envelope, wrapping Math.NET |
-| **SignalFlux.Protocols** | Protocol adapters for Modbus, MAVLink, NMEA 0183, CAN bus (DBC parser + decoder, Intel/Motorola signal encode-decode, in-memory transport), and ARINC 429 (32-bit word encode/decode with BNR + parity), bridging `Signal<T>` and `Measurement<T>` with real-world protocol data |
+| **SignalFlux.Protocols** | Protocol adapters for Modbus, MAVLink, NMEA 0183, CAN bus (DBC parser + decoder, Intel/Motorola signal encode-decode, in-memory transport), ARINC 429 (32-bit word encode/decode with BNR + parity), and SCPI (IEEE-488.2 block codec: `ScpiClient`, `ScpiBlockParser`, `InMemoryScpiConnection`, waveform block extensions) — bridging `Signal<T>` and `Measurement<T>` with real-world protocol data |
 | **SignalFlux.OpcUa** | OPC UA client adapter: connect (anonymous / username+password), read, write, subscribe, browse; automatic reconnection with `OnStateChanged` events; engineering-unit resolution into typed `UnitsNet` units |
 | **SignalFlux.Space** | CCSDS Space Packet framing (decode/encode), CCSDS time codes (CUC/CDS → `Timestamp`), ECSS PUS TM secondary header + CRC-16, and PUS Service 3 housekeeping (TM[3,25]/[3,26]) → `Measurement<T>` |
 

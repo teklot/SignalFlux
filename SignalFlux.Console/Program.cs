@@ -59,6 +59,7 @@ namespace SignalFlux.Console
                 WriteLine("  7. Visualization (ScottPlot)");
                 WriteLine("  8. OPC UA client");
                 WriteLine("  9. Space telemetry");
+                WriteLine(" 10. SCPI instrument protocol");
                 WriteLine("  0. Exit");
                 WriteLine();
                 Write("Choose an option: ");
@@ -75,7 +76,7 @@ namespace SignalFlux.Console
                 if (choice == 0)
                     return;
 
-                if (choice is >= 1 and <= 9)
+                if (choice is >= 1 and <= 10)
                 {
                     await RunMenuChoice(choice);
                     WriteLine();
@@ -104,6 +105,7 @@ namespace SignalFlux.Console
                 case 7: await RunDemos(new[] { "visualization" }); break;
                 case 8: await RunDemos(new[] { "opcua" }); break;
                 case 9: await RunDemos(new[] { "space" }); break;
+                case 10: await RunDemos(new[] { "scpi" }); break;
             }
         }
 
@@ -188,6 +190,16 @@ namespace SignalFlux.Console
                             WriteLine($"Space telemetry demo skipped: {ex.Message}");
                         }
                         break;
+                    case "scpi":
+                        try
+                        {
+                            await ScpiSamples.RunScpiSample();
+                        }
+                        catch (Exception ex)
+                        {
+                            WriteLine($"SCPI demo skipped: {ex.Message}");
+                        }
+                        break;
                     default:
                         WriteLine($"Unknown demo '{name}'. Run with --help for the list.");
                         break;
@@ -199,6 +211,7 @@ namespace SignalFlux.Console
         {
             var (signal, _) = BuildCoreContext();
 
+            WriteLine();
             WriteLine($"Generated signal: {signal.Count} samples @ {signal.Frequency} Hz");
             WriteLine($"Duration: {signal.Duration.TotalSeconds:F3}s");
             WriteLine($"Unit: {signal.Unit}");

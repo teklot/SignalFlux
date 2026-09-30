@@ -9,7 +9,10 @@
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageTags>SignalFlux;Storage;CSV;SQLite;Parquet;SignalReplayer;Serialization;DataPersistence;dotnet-library</PackageTags>
-    <PackageReleaseNotes>This release annotates the public API for nullable reference types.</PackageReleaseNotes>
+    <PackageReleaseNotes>
+      - This release annotates the public API for nullable reference types.
+      - Upgrade packages Microsoft.Data.Sqlite, Parquet.Net, and System.Text.Json.
+    </PackageReleaseNotes>
     <PackageProjectUrl>https://github.com/teklot/signalflux</PackageProjectUrl>
     <RepositoryUrl>https://github.com/teklot/signalflux.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
@@ -21,11 +24,11 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SignalFlux\SignalFlux.csproj" />
-    <PackageReference Include="Microsoft.Data.Sqlite" Version="10.0.11" />
-    <PackageReference Include="Parquet.Net" Version="5.0.2" />
+    <PackageReference Include="Microsoft.Data.Sqlite" Version="10.0.12" />
+    <PackageReference Include="Parquet.Net" Version="5.5.0" />
     <PackageReference Include="Snappier" Version="1.3.1" />
     <PackageReference Include="SQLitePCLRaw.lib.e_sqlite3" Version="3.53.3" />
-    <PackageReference Include="System.Text.Json" Version="10.0.11" />
+    <PackageReference Include="System.Text.Json" Version="10.0.12" />
   </ItemGroup>
 
 </Project>

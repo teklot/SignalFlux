@@ -35,8 +35,7 @@ namespace SignalFlux.Console
 
         public static void RunScottPlotSample()
         {
-            WriteLine("=== ScottPlot Visualization Demo ===");
-            WriteLine();
+            WriteLine("\n=== ScottPlot Visualization Demo ===\n");
 
             var plot = new ScottPlot.Plot();
             var plotted = plot.AddSignal(CreateSignal(), SeriesLabel);
@@ -48,7 +47,6 @@ namespace SignalFlux.Console
             var path = System.IO.Path.Combine(System.IO.Path.GetTempPath(), $"signalflux-scottplot-{Guid.NewGuid():N}.png");
             plot.SavePng(path, 800, 400);
             WriteLine($"Saved ScottPlot render to: {path}");
-            WriteLine();
         }
     }
 }

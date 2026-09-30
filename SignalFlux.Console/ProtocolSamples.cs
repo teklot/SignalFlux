@@ -14,8 +14,7 @@ namespace SignalFlux.Console
     {
         public static void RunModbusSample()
         {
-            WriteLine("=== Modbus Protocol Demo ===");
-            WriteLine();
+            WriteLine("\n=== Modbus Protocol Demo ===\n");
 
             var original = new Signal<double>(
                 new double[] { 23.5, 24.1, 23.8, 24.5, 25.0 },
@@ -45,8 +44,7 @@ namespace SignalFlux.Console
 
         public static void RunMavlinkSample()
         {
-            WriteLine("\n=== MAVLink Protocol Demo ===");
-            WriteLine();
+            WriteLine("\n=== MAVLink Protocol Demo ===\n");
 
             MavlinkSignalExtensions.InitializeDialect(DialectType.Common);
             WriteLine("Initialized MAVLink with Common dialect.");
@@ -85,8 +83,7 @@ namespace SignalFlux.Console
 
         public static void RunNmeaSample()
         {
-            WriteLine("\n=== NMEA 0183 Protocol Demo ===");
-            WriteLine();
+            WriteLine("\n=== NMEA 0183 Protocol Demo ===\n");
 
             var sentences = new[]
             {
@@ -135,8 +132,7 @@ namespace SignalFlux.Console
 
         public static async Task RunCanSample()
         {
-            WriteLine("\n=== CAN Bus Protocol Demo ===");
-            WriteLine();
+            WriteLine("\n=== CAN Bus Protocol Demo ===\n");
 
             // A 16-bit Motorola (big-endian) engine-speed signal with MSB at bit 7 of byte 0.
             var frame = new CanFrame(0x100, new byte[] { 0x27, 0x10, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 }, Timestamp.UtcNow);
@@ -190,8 +186,7 @@ namespace SignalFlux.Console
 
         public static void RunArinc429Sample()
         {
-            WriteLine("\n=== ARINC 429 Protocol Demo ===");
-            WriteLine();
+            WriteLine("\n=== ARINC 429 Protocol Demo ===\n");
 
             // An altitude word: label 203 (octal), SDI 0, BNR data with a 0.25 ft LSB weight.
             var word = new Arinc429Word(label: 0x83, sdi: 0, data: 48000, ssm: 0, parity: 0).WithOddParity();
