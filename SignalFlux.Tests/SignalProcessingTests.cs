@@ -149,29 +149,5 @@ namespace SignalFlux.Tests
             Assert.Equal(n / 2 + 1, psd.Length);
             Assert.True(psd.All(p => p >= 0));
         }
-
-        // ------------------------------------------------------------------
-        // Envelope
-        // ------------------------------------------------------------------
-
-        [Fact]
-        public void Envelope_TracksMovingMax()
-        {
-            var data = new double[] { 1.0, 2.0, 3.0, 2.0, 1.0, 0.0 };
-            var signal = new Signal<double>(data, 1000, Timestamp.UtcNow);
-
-            var env = signal.Envelope(3);
-
-            // Window size 3 -> radius 1. At index 2 (value 3) window [2,3,2] max 3.
-            Assert.Equal(3.0, env.Samples.Span[2], precision: 12);
-            Assert.Equal(3.0, env.Samples.Span[1], precision: 12);
-        }
-
-        [Fact]
-        public void Envelope_InvalidWindow_Throws()
-        {
-            var signal = Sine(1.0, 100, 1000, 64);
-            Assert.Throws<ArgumentOutOfRangeException>(() => signal.Envelope(0));
-        }
     }
 }

@@ -81,7 +81,7 @@ namespace SignalFlux.Console
             System.Console.WriteLine("  core               Core domain model walkthrough (Signal, statistics, Experiment, Session)");
             System.Console.WriteLine("  csv                CSV storage round-trip");
             System.Console.WriteLine("  acquisition        Live acquisition pipeline (simulated sensor -> TCP -> Signal -> CSV + SQLite)");
-            System.Console.WriteLine("  signalprocessing   FFT / spectrum / peaks / PSD / envelope");
+            System.Console.WriteLine("  signalprocessing   FFT / spectrum / peaks / PSD / envelope / filters / wavelets");
             System.Console.WriteLine("  protocols          Modbus, MAVLink, NMEA, CAN (DBC), ARINC 429");
             System.Console.WriteLine("  visualization      ScottPlot render");
             System.Console.WriteLine("  space              CCSDS Space Packets, CUC/CDS time, PUS housekeeping");

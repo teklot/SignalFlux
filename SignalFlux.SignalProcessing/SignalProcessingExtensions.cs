@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Numerics;
 using MathNet.Numerics.IntegralTransforms;
+using NWaves.Transforms;
 
 namespace SignalFlux.SignalProcessing
 {
@@ -147,31 +148,41 @@ namespace SignalFlux.SignalProcessing
             return result;
         }
 
-        /// <summary>Computes a moving-max envelope of the signal using a sliding window.</summary>
+        /// <summary>
+        /// Computes the complex (Hilbert-based) envelope of the signal as the magnitude of the analytic signal.
+        /// Delegated to NWaves; the transform runs on a zero-padded power-of-two buffer and is double precision.
+        /// </summary>
         /// <param name="signal">The source signal.</param>
-        /// <param name="windowSize">The sliding window size (should be odd).</param>
-        /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="windowSize"/> is non-positive.</exception>
-        public static Signal<double> Envelope(this Signal<double> signal, int windowSize)
+        /// <returns>A signal whose samples trace the amplitude envelope; sampling metadata matches the source.</returns>
+        public static Signal<double> Envelope(this Signal<double> signal)
         {
-            if (windowSize <= 0)
-                throw new ArgumentOutOfRangeException(nameof(windowSize), "Window size must be positive");
+            var sampleArray = signal.Samples.ToArray();
+            if (signal.Count == 0)
+                return signal.WithSamples(Array.Empty<double>());
+            if (signal.Count == 1)
+                return signal.WithSamples(sampleArray);
 
-            var samples = signal.Samples.Span;
-            var result = new double[samples.Length];
-            int radius = windowSize / 2;
+            int size = NextPowerOfTwo(signal.Count);
+            if (size < 16)
+                size = 16;
 
-            for (int i = 0; i < samples.Length; i++)
-            {
-                int start = Math.Max(0, i - radius);
-                int end = Math.Min(samples.Length - 1, i + radius);
-                double max = samples[start];
-                for (int j = start + 1; j <= end; j++)
-                    if (samples[j] > max)
-                        max = samples[j];
-                result[i] = max;
-            }
+            var hilbert = new HilbertTransform64(size);
+            var analytic = hilbert.AnalyticSignal(sampleArray);
+            var magnitude = analytic.Magnitude;
+
+            var result = new double[sampleArray.Length];
+            for (int i = 0; i < result.Length; i++)
+                result[i] = magnitude[i];
 
             return signal.WithSamples(result);
+        }
+
+        private static int NextPowerOfTwo(int value)
+        {
+            int power = 1;
+            while (power < value)
+                power <<= 1;
+            return power;
         }
 
         private static List<int> PruneByDistance(List<int> peaks, int minDistance)

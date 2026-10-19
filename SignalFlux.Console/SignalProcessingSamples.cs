@@ -60,17 +60,85 @@ namespace SignalFlux.Console
 
             var amSignal = new Signal<double>(am, sampleRate, Timestamp.UtcNow,
                 unit: UnitsNet.Units.ElectricPotentialUnit.Volt);
-            var envelope = amSignal.Envelope(windowSize: 101);
+            var envelope = amSignal.Envelope();
             double envMin = double.MaxValue, envMax = double.MinValue;
             var envSpan = envelope.Samples.Span;
-            for (int i = 0; i < envSpan.Length; i++)
+            for (int i = 50; i < envSpan.Length - 50; i++) // skip Hilbert boundary artifacts
             {
                 if (envSpan[i] < envMin) envMin = envSpan[i];
                 if (envSpan[i] > envMax) envMax = envSpan[i];
             }
 
-            WriteLine($"Envelope (2 Hz AM on 100 Hz carrier, window 101): min {envMin:F2} V, max {envMax:F2} V");
+            WriteLine();
+            WriteLine($"Envelope (2 Hz AM on 100 Hz carrier, Hilbert): [{envMin:F2}, {envMax:F2}] V");
             WriteLine($"  Expected: amplitude modulation spans (1 ± 0.8) V");
+            WriteLine();
+            WriteLine("--- filters, Welch PSD, wavelets ---");
+            WriteLine();
+
+            // Low-pass filter: 50 Hz tone contaminated with high-frequency noise. The causal Butterworth
+            // has a group delay, so gauge the cleanup via a high-pass residue instead of a sample-aligned
+            // comparison with the ideal tone.
+            var rng = new Random(11);
+            var noisy = new double[2048];
+            for (int i = 0; i < noisy.Length; i++)
+                noisy[i] = Math.Sin(2 * Math.PI * 50 * i / sampleRate) + (rng.NextDouble() - 0.5);
+            var noisySignal = new Signal<double>(noisy, sampleRate, Timestamp.UtcNow,
+                unit: UnitsNet.Units.ElectricPotentialUnit.Volt);
+            var filtered = noisySignal.LowPass(cutoffFrequencyHz: 80, order: 4);
+            double noiseHf = Rms(noisySignal.HighPass(cutoffFrequencyHz: 200, order: 8));
+            double filteredHf = Rms(filtered.HighPass(cutoffFrequencyHz: 200, order: 8));
+            WriteLine($"LowPass(80 Hz, order 4): high-frequency residue {noiseHf:F3} V -> {filteredHf:F3} V");
+
+            WriteLine();
+            var denoised = noisySignal.Denoise(windowSize: 15);
+            WriteLine($"Savitzky-Golay Denoise(window 15): noise {ToneResidualRms(noisySignal, sampleRate, 50):F4} V -> {ToneResidualRms(denoised, sampleRate, 50):F4} V");
+
+            // Welch PSD of the AM carrier -> peak near the 100 Hz carrier.
+            var welch = amSignal.WelchPsd(segmentSize: 256);
+            int welchPeak = 0;
+            for (int i = 1; i < welch.Power.Length; i++)
+                if (welch.Power[i] > welch.Power[welchPeak])
+                    welchPeak = i;
+            WriteLine($"\nWelch PSD (256-sample segments): peak at {welch.Frequencies[welchPeak]:F1} Hz (expected near 100 Hz)");
+            WriteLine($"  {welch.Power.Length} one-sided bins; out-of-band fraction {OutOfBand(amSignal.WelchPsd(segmentSize: 256), 100):F4}");
+
+            // Wavelet denoise of the same noisy tone (zero-phase, single level).
+            var waveletCleaned = noisySignal.WaveletDenoise(threshold: 0.5, soft: true, WaveletKind.Daubechies, taps: 4);
+            WriteLine($"\nWavelet denoise (db4, soft threshold 0.5): noise {ToneResidualRms(noisySignal, sampleRate, 50):F4} V -> {ToneResidualRms(waveletCleaned, sampleRate, 50):F4} V");
+        }
+
+        private static double ToneResidualRms(Signal<double> signal, double sampleRate, double toneHz)
+        {
+            var values = signal.Samples.ToArray();
+            double sumSq = 0;
+            for (int i = values.Length / 2; i < values.Length; i++)
+            {
+                double residual = values[i] - Math.Sin(2 * Math.PI * toneHz * i / sampleRate);
+                sumSq += residual * residual;
+            }
+            return Math.Sqrt(sumSq / (values.Length - values.Length / 2));
+        }
+
+        private static double Rms(Signal<double> signal)
+        {
+            var values = signal.Samples.ToArray();
+            double sumSq = 0;
+            for (int i = values.Length / 2; i < values.Length; i++)
+                sumSq += values[i] * values[i];
+            return Math.Sqrt(sumSq / (values.Length - values.Length / 2));
+        }
+
+        private static double OutOfBand(WelchPsdResult psd, double toneHz)
+        {
+            double total = 0, outside = 0;
+            for (int i = 0; i < psd.Power.Length; i++)
+            {
+                total += psd.Power[i];
+                if (Math.Abs(psd.Frequencies[i] - toneHz) > 5)
+                    outside += psd.Power[i];
+            }
+            return total > 0 ? outside / total : 0;
         }
 
         private static int DominantBin(System.Numerics.Complex[] spectrum)

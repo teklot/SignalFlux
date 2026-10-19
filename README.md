@@ -60,7 +60,7 @@ double[] samples = block.ToDoubles();       // waveform block -> samples
 The codec is byte-level and transport-agnostic: `ScpiClient` issues queries,
 `ScpiBlockParser` decodes IEEE-488.2 block frames, and `ScpiSignalExtensions`
 converts waveform blocks to `Signal<T>`. Per the standalone-libs rule, device
-models live in HelixForge — protocol codecs stay in SignalFlux.
+models live in [HelixForge](https://github.com/teklot/HelixForge); protocol codecs stay in SignalFlux.
 
 ## The Problem
 
@@ -234,7 +234,7 @@ The pattern is the same for OxyPlot, LiveCharts, or any library that accepts x/y
 
 ### Signal Processing
 
-`SignalFlux.SignalProcessing` extends the same principle to analysis: operate on `Signal<T>` directly instead of ripping out raw arrays. Numerical algorithms are delegated to Math.NET Numerics per the guiding principle — SignalFlux standardizes the *shape* of the operation, not the math.
+`SignalFlux.SignalProcessing` extends the same principle to analysis: operate on `Signal<T>` directly instead of ripping out raw arrays. Numbers come from trusted engines (Math.NET Numerics for the transforms, NWaves for filters, wavelets, and periodograms), per the guiding principle that SignalFlux standardizes the *shape* of the operation, not the math.
 
 ```csharp
 using SignalFlux;
@@ -250,22 +250,39 @@ double[] magnitude   = signal.MagnitudeSpectrum();
 double[] power       = signal.PowerSpectrum();
 double[] psd         = signal.PowerSpectralDensity();  // |F|^2 / N
 
+// Welch's averaged periodogram (Hann window by default), smoother than |F|^2 / N:
+WelchPsdResult welch = signal.WelchPsd(segmentSize: 256);
+double[]      bins   = welch.Frequencies;         // Hz per bin
+double[]      power  = welch.Power;               // V^2 / Hz per bin
+
 // Inverse FFT back to the time domain:
 Signal<double> reconstructed = spectrum.InverseSpectrum(signal.Frequency, signal.StartTime, signal.Unit);
 
-// Peak detection (threshold + minimum-distance) and a moving-max envelope:
+// Peak detection, Hilbert envelope (replaces the 0.8.0 moving-max form):
 var peaks = signal.FindPeaksDetailed(threshold: 0.5);
-Signal<double> envelope = signal.Envelope(windowSize: 101);
+Signal<double> envelope = signal.Envelope();
+
+// Butterworth / Bessel FIR & IIR filters on Signal<double>:
+Signal<double> cleaned    = signal.LowPass(cutoffFrequencyHz: 80, order: 4);
+Signal<double> transients = signal.HighPass(cutoffFrequencyHz: 50, order: 4);
+Signal<double> band       = signal.BandPass(loCutoffFrequencyHz: 10, hiCutoffFrequencyHz: 20, order: 4);
+Signal<double> notch      = signal.BandStop(loCutoffFrequencyHz: 48, hiCutoffFrequencyHz: 52, order: 4);
+Signal<double> smoothed   = signal.Denoise(windowSize: 15);  // Savitzky-Golay
+
+// Wavelet transforms and threshold denoising (Haar, Daubechies, Coiflet, Symlet):
+double[] coefficients = signal.WaveletTransform(WaveletKind.Daubechies, taps: 4);
+Signal<double> reconstructed2 = coefficients.WaveletReconstruct(signal.Frequency, signal.StartTime, signal.Unit);
+Signal<double> denoised = signal.WaveletDenoise(threshold: 0.5, soft: true);
 ```
 
-A console sample (`SignalProcessingSamples`) demonstrates the full round-trip: FFT spectrum of a 125 Hz tone, inverse-FFT reconstruction to ~1e-16 error, one peak per cycle, and envelope of a 2 Hz amplitude-modulated carrier.
+A console sample (`SignalProcessingSamples`) demonstrates the full round-trip: FFT spectrum of a 125 Hz tone, inverse-FFT reconstruction to ~1e-16 error, one peak per cycle, and Hilbert envelope of a 2 Hz amplitude-modulated carrier, plus low-pass and Savitzky-Golay denoising of a noisy tone, Welch PSD, and wavelet denoising.
 
 ## Technical Differentiators
 
 | vs. | SignalFlux |
 |---|---|
 | **Homemade Signal classes** | Zero-dependency core, immutable structs, `IEquatable<T>` everywhere, `UnitsNet`-typed units |
-| **Math.NET** | Math.NET is algorithmic (FFT, linear algebra). SignalFlux is a domain model that *wraps* Math.NET via `SignalFlux.SignalProcessing`, so `Signal<T>` gets FFT, spectrum, PSD, peaks, and envelope without raw-array glue |
+| **Math.NET / NWaves** | Math.NET is algorithmic (FFT, linear algebra) and NWaves is algorithmic (filter design, wavelets, periodograms). SignalFlux is a domain model that *wraps* both via `SignalFlux.SignalProcessing`, so `Signal<T>` gets FFT, spectrum, PSD/Welch, peaks, envelope, filters, wavelets, and denoising without raw-array glue |
 | **OPC UA / MODBUS** | Protocol-specific. SignalFlux provides the protocol-independent types those adapters should produce |
 | **Vendor SDKs** | Tied to hardware. SignalFlux normalizes data from any source into one shape |
 | **Python (NumPy/Pandas)** | No static typing, no .NET interop. SignalFlux brings the same concept to .NET with `Memory<T>`, `Span<T>`, compile-time safety |
@@ -279,8 +296,8 @@ A console sample (`SignalProcessingSamples`) demonstrates the full round-trip: F
 | **SignalFlux.Generators** | Signal generators: sine, square, noise, ramp, sawtooth, random walk |
 | **SignalFlux.IO** | Unified stream connection abstraction: TCP, UDP, Serial, Named Pipes with async, cancellation, timeouts |
 | **SignalFlux.Storage** | CSV streaming read/write, SQLite & Parquet backends, `ISignalStore`/`IExperimentStore` interfaces, `SignalReplayer` |
-| **SignalFlux.SignalProcessing** | Signal-processing operations on `Signal<T>`: FFT / inverse FFT and spectrum analysis, peak detection, one-sided PSD, and moving-max envelope, wrapping Math.NET |
-| **SignalFlux.Protocols** | Protocol adapters for Modbus, MAVLink, NMEA 0183, CAN bus (DBC parser + decoder, Intel/Motorola signal encode-decode, in-memory transport), ARINC 429 (32-bit word encode/decode with BNR + parity), and SCPI (IEEE-488.2 block codec: `ScpiClient`, `ScpiBlockParser`, `InMemoryScpiConnection`, waveform block extensions) — bridging `Signal<T>` and `Measurement<T>` with real-world protocol data |
+| **SignalFlux.SignalProcessing** | Signal-processing operations on `Signal<T>`: FFT / inverse FFT and spectrum analysis, peak detection, one-sided PSD and Welch PSD, Hilbert envelope, FIR/IIR filters (incl. Butterworth/Bessel) and Savitzky-Golay denoising, wavelet transforms and denoising, wrapping Math.NET and NWaves |
+| **SignalFlux.Protocols** | Protocol adapters for Modbus, MAVLink, NMEA 0183, CAN bus (DBC parser + decoder, Intel/Motorola signal encode-decode, in-memory transport), ARINC 429 (32-bit word encode/decode with BNR + parity), and SCPI (IEEE-488.2 block codec: `ScpiClient`, `ScpiBlockParser`, `InMemoryScpiConnection`, waveform block extensions), bridging `Signal<T>` and `Measurement<T>` with real-world protocol data |
 | **SignalFlux.OpcUa** | OPC UA client adapter: connect (anonymous / username+password), read, write, subscribe, browse; automatic reconnection with `OnStateChanged` events; engineering-unit resolution into typed `UnitsNet` units |
 | **SignalFlux.Space** | CCSDS Space Packet framing (decode/encode), CCSDS time codes (CUC/CDS → `Timestamp`), ECSS PUS TM secondary header + CRC-16, and PUS Service 3 housekeeping (TM[3,25]/[3,26]) → `Measurement<T>` |
 

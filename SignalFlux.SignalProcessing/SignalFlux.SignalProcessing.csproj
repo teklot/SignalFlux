@@ -4,16 +4,17 @@
     <TargetFrameworks>netstandard2.0;net10.0</TargetFrameworks>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <Title>SignalFlux.SignalProcessing</Title>
-    <Description>SignalFlux.SignalProcessing provides signal-processing operations for Signal&lt;T&gt; including FFT/spectrum analysis, peak detection, PSD, and envelope, wrapping Math.NET by convention.</Description>
+    <Description>SignalFlux.SignalProcessing provides signal-processing operations for Signal&lt;T&gt;: FFT/spectrum analysis, peak detection, PSD (incl. Welch), envelope (Hilbert), FIR/IIR filters, wavelet transforms, and denoising. Spectral math wraps Math.NET Numerics; filtering, wavelets, and periodograms wrap NWaves.</Description>
     <PackageId>SignalFlux.SignalProcessing</PackageId>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
-    <PackageTags>SignalFlux;SignalProcessing;FFT;Spectrum;PSD;PeakDetection;Envelope;Engineering;dotnet-library</PackageTags>
+    <PackageTags>SignalFlux;SignalProcessing;FFT;Spectrum;PSD;Welch;PeakDetection;Envelope;Filtering;IIR;FIR;Butterworth;Wavelet;Denoise;Engineering;dotnet-library</PackageTags>
     <PackageReleaseNotes>
-      - FFT / inverse FFT and spectrum analysis via Math.NET Numerics (complex bins, magnitude, power, frequency axis in Hz)
-      - Peak detection (local maxima with threshold and minimum-distance) via FindPeaks and FindPeaksDetailed
-      - One-sided power spectral density (|F|^2 / N)
-      - Moving-max envelope
+      - FIR / IIR filters: LowPass, HighPass, BandPass, BandStop (Butterworth, Bessel, Chebyshev I/II, Elliptic design) via NWaves 64-bit filtering
+      - Savitzky-Golay denoise filter
+      - Hilbert-transform envelope (replaces the 0.8.0 moving-max envelope)
+      - Welch's method PSD with power-of-two segments and Hann/Blackman/etc. windows (replaces the one-sided |F|^2 / N estimate)
+      - Wavelet transforms (Haar, Daubechies, Coiflet, Symlet) and wavelet threshold denoising
     </PackageReleaseNotes>
     <PackageProjectUrl>https://github.com/teklot/signalflux</PackageProjectUrl>
     <RepositoryUrl>https://github.com/teklot/signalflux.git</RepositoryUrl>
@@ -27,6 +28,7 @@
   <ItemGroup>
     <ProjectReference Include="..\SignalFlux\SignalFlux.csproj" />
     <PackageReference Include="MathNet.Numerics" Version="5.0.0" />
+    <PackageReference Include="NWaves" Version="0.9.6" />
   </ItemGroup>
 
 </Project>
