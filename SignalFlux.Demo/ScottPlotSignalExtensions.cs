@@ -5,7 +5,7 @@ using SignalFlux;
 // The package namespace shares a name with the ScottPlot library, so all ScottPlot
 // types are referenced through global:: aliases to avoid namespace shadowing.
 
-namespace SignalFlux.Console.Visualization.ScottPlot
+namespace SignalFlux.Demo.Visualization.ScottPlot
 {
     using SPlot = global::ScottPlot.Plot;
     using SSignal = global::ScottPlot.Plottables.Signal;

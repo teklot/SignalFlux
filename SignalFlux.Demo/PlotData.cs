@@ -1,7 +1,7 @@
 using System;
 using System.Globalization;
 
-namespace SignalFlux.Console.Visualization
+namespace SignalFlux.Demo.Visualization
 {
     /// <summary>Internal helpers for converting SignalFlux domain types into plot-ready values.</summary>
     internal static class PlotData

@@ -1,7 +1,7 @@
-namespace SignalFlux.Console
+namespace SignalFlux.Demo
 {
     /// <summary>
-    /// Parsed command-line options for the SignalFlux console demos.
+    /// Parsed command-line options for the SignalFlux demo app.
     /// </summary>
     internal sealed class CliOptions
     {
@@ -72,10 +72,10 @@ namespace SignalFlux.Console
         /// <summary>Prints usage help to the console.</summary>
         public static void PrintHelp()
         {
-            System.Console.WriteLine("SignalFlux console demos");
+            System.Console.WriteLine("SignalFlux demo app");
             System.Console.WriteLine();
             System.Console.WriteLine("Usage:");
-            System.Console.WriteLine("  SignalFlux.Console [options]");
+            System.Console.WriteLine("  SignalFlux.Demo [options]");
             System.Console.WriteLine();
             System.Console.WriteLine("Demos:");
             System.Console.WriteLine("  core               Core domain model walkthrough (Signal, statistics, Experiment, Session)");

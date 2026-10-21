@@ -2,7 +2,7 @@ using SignalFlux.Space.Pus;
 using UnitsNet.Units;
 using static System.Console;
 
-namespace SignalFlux.Console
+namespace SignalFlux.Demo
 {
     /// <summary>
     /// v0.9 space telemetry demo: builds a synthetic ECSS PUS housekeeping packet

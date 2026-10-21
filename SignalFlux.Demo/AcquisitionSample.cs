@@ -6,7 +6,7 @@ using System.Text;
 using UnitsNet.Units;
 using static System.Console;
 
-namespace SignalFlux.Console
+namespace SignalFlux.Demo
 {
     public static class AcquisitionSample
     {

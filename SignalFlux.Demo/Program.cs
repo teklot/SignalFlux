@@ -2,10 +2,10 @@ using SignalFlux.Generators;
 using SignalFlux.TimeSeries;
 using static System.Console;
 
-namespace SignalFlux.Console
+namespace SignalFlux.Demo
 {
     /// <summary>
-    /// SignalFlux console demos entry point.
+    /// SignalFlux demo app entry point.
     /// With no arguments all demos run in sequence; use --demo &lt;name&gt; to run a single demo
     /// and --list to enumerate the available demo names.
     /// </summary>
@@ -48,7 +48,7 @@ namespace SignalFlux.Console
             while (true)
             {
                 TryClearScreen();
-                WriteLine("=== SignalFlux Console Menu ===");
+                WriteLine("=== SignalFlux Demo Menu ===");
                 WriteLine();
                 WriteLine("  1. Run all demos");
                 WriteLine("  2. Core domain model");

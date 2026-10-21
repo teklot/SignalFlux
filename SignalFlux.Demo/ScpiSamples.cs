@@ -3,7 +3,7 @@ using SignalFlux.Protocols.Scpi;
 using UnitsNet.Units;
 using static System.Console;
 
-namespace SignalFlux.Console
+namespace SignalFlux.Demo
 {
     /// <summary>
     /// SCPI protocol codec demo: drives a simulated oscilloscope instrument

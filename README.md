@@ -275,7 +275,7 @@ Signal<double> reconstructed2 = coefficients.WaveletReconstruct(signal.Frequency
 Signal<double> denoised = signal.WaveletDenoise(threshold: 0.5, soft: true);
 ```
 
-A console sample (`SignalProcessingSamples`) demonstrates the full round-trip: FFT spectrum of a 125 Hz tone, inverse-FFT reconstruction to ~1e-16 error, one peak per cycle, and Hilbert envelope of a 2 Hz amplitude-modulated carrier, plus low-pass and Savitzky-Golay denoising of a noisy tone, Welch PSD, and wavelet denoising.
+A sample in the `SignalFlux.Demo` app (`SignalProcessingSamples`) demonstrates the full round-trip: FFT spectrum of a 125 Hz tone, inverse-FFT reconstruction to ~1e-16 error, one peak per cycle, and Hilbert envelope of a 2 Hz amplitude-modulated carrier, plus low-pass and Savitzky-Golay denoising of a noisy tone, Welch PSD, and wavelet denoising.
 
 ## Technical Differentiators
 

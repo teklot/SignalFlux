@@ -1,8 +1,8 @@
 using SignalFlux;
-using SignalFlux.Console.Visualization.ScottPlot;
+using SignalFlux.Demo.Visualization.ScottPlot;
 using static System.Console;
 
-namespace SignalFlux.Console
+namespace SignalFlux.Demo
 {
     public static class VisualizationSamples
     {

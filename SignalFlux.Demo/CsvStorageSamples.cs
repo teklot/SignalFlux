@@ -1,7 +1,7 @@
 using SignalFlux.Storage;
 using static System.Console;
 
-namespace SignalFlux.Console
+namespace SignalFlux.Demo
 {
     public static class CsvStorageSamples
     {

@@ -8,7 +8,7 @@ using SignalFlux.Protocols.Modbus;
 using SignalFlux.Protocols.Nmea;
 using static System.Console;
 
-namespace SignalFlux.Console
+namespace SignalFlux.Demo
 {
     public static class ProtocolSamples
     {

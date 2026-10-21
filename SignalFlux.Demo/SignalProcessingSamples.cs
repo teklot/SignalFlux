@@ -3,7 +3,7 @@ using SignalFlux;
 using SignalFlux.SignalProcessing;
 using static System.Console;
 
-namespace SignalFlux.Console
+namespace SignalFlux.Demo
 {
     public static class SignalProcessingSamples
     {
